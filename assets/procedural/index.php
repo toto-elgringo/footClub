@@ -24,7 +24,7 @@ $teams = $pdo->query("SELECT * FROM team")->fetchAll(PDO::FETCH_OBJ);
 
     <main>
         <?php include "includes/navbar.php"; ?>
-
+        <h1>test</h1>
         <div class="container">
 
             <div class="header">
