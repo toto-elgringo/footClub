@@ -1,9 +1,8 @@
 <?php
-include_once "classes/manager/StaffMemberManager.php";
-include_once "classes/StaffMember.php";
-include_once "function/helpers.php";
+include "includes/navbar.php";
 
-$staffMemberManager = new StaffMemberManager();
+use src\Model\StaffMember;
+
 $staffs = $staffMemberManager->findAll();
 
 $error = [];
@@ -17,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($first_name) || empty($last_name) || empty($picture['name']) || empty($role)) {
         $error[] = "Tous les champs doivent être remplis";
     } else {
-        $uploadResult = uploadPicture($picture, 'staff_');
+        $uploadResult = UploadPicture::upload($picture, 'staff_');
 
         if ($uploadResult['success']) {
             try {
@@ -53,8 +52,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <main>
-
-        <?php include "includes/navbar.php"; ?>
 
         <div class="container">
 
@@ -130,10 +127,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <p>Aucun membre du staff n'a été trouvé.</p>
                 <?php endif; ?>
             </div>
-
+            <?php include "includes/footer.php"; ?>
         </div>
     </main>
-
     <script src="js/script.js"></script>
 </body>
 

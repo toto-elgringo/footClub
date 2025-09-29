@@ -1,11 +1,9 @@
 <?php
-include_once "classes/manager/TeamManager.php";
+include "includes/navbar.php";
 
+use src\Model\Team;
 
-
-$teamManager = new TeamManager();
 $teams = $teamManager->findAll();
-
 $teamsWithCount = $teamManager->findAllWithPlayerCount();
 
 $error = [];
@@ -13,12 +11,14 @@ $error = [];
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nom = trim($_POST["nom"]);
 
+
     if (empty($nom)) {
         $error[] = "Le nom de l'équipe est obligatoire";
     }
 
     if (empty($error)) {
         $team = new Team(null, $nom);
+
         $teamManager->insert($team);
 
         header("Location: equipes.php");
@@ -42,8 +42,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
     <main>
-        <?php include "includes/navbar.php"; ?>
-
         <div class="container">
 
             <div class="header">
@@ -58,12 +56,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
 
                 <?php if (!empty($error)): ?>
-                        <div class="error">
-                            <?php foreach ($error as $msg): ?>
-                                <p><?php echo htmlspecialchars($msg); ?></p>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
+                    <div class="error">
+                        <?php foreach ($error as $msg): ?>
+                            <p><?php echo htmlspecialchars($msg); ?></p>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
 
 
                 <div class="header-toggle-add">
@@ -96,6 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 <?php } ?>
             </div>
+            <?php include "includes/footer.php"; ?>
         </div>
     </main>
     <script src="js/script.js"></script>

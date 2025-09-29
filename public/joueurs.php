@@ -1,15 +1,9 @@
 <?php
-require_once __DIR__ . "/function/helpers.php";
-require_once __DIR__ . "/classes/manager/PlayerManager.php";
-require_once __DIR__ . "/classes/Player.php";
-require_once __DIR__ . "/classes/manager/TeamManager.php";
-require_once __DIR__ . "/classes/Team.php";
-require_once __DIR__ . "/classes/manager/PlayerTeamManager.php";
-require_once __DIR__ . "/classes/PlayerTeam.php";
 
-$playerManager = new PlayerManager();
-$teamManager = new TeamManager();
-$playerTeamManager = new PlayerTeamManager();
+include "includes/navbar.php";
+
+use src\Model\Player;
+use src\Model\PlayerTeam;
 
 $players = $playerManager->findAll();
 $teams = $teamManager->findAll();
@@ -26,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['player_id'], $_POST['t
         $error[] = "Le joueur appartient déjà à l'équipe";
     } else {
         $playerTeam = new PlayerTeam($player_id, $team_id, $role);
-        
+
         if ($playerTeamManager->insert($playerTeam)) {
             header("Location: joueurs.php");
             exit;
@@ -47,8 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
     }
 
     if (empty($error)) {
-        $uploadResult = uploadPicture($picture, 'player_');
-        
+        $uploadResult = UploadPicture::upload($picture, 'player_');
+
         if ($uploadResult['success']) {
             try {
                 $player = new Player(null, $prenom, $nom, $birthdate, $uploadResult['filename']);
@@ -81,8 +75,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
 
 <body>
     <main>
-        <?php include "includes/navbar.php"; ?>
-
         <div class="container">
 
             <div class="header">
@@ -202,11 +194,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
                 <?php
                 }
                 ?>
-
             </div>
+            <?php include "includes/footer.php"; ?>
         </div>
     </main>
-
     <script src="js/script.js"></script>
     <script src="js/joueurs.js"></script>
 </body>

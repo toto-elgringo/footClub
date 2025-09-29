@@ -1,12 +1,10 @@
 <?php
-include "classes/manager/PlayerManager.php";
-include "classes/manager/TeamManager.php";
-
-$playerManager = new PlayerManager();
-$teamManager = new TeamManager();
+include "includes/navbar.php";
 
 $players = $playerManager->findAll();
 $teams = $teamManager->findAll();
+
+
 
 ?>
 
@@ -26,8 +24,6 @@ $teams = $teamManager->findAll();
 <body>
 
     <main>
-        <?php include "includes/navbar.php"; ?>
-
         <div class="container">
 
             <div class="header">
@@ -116,12 +112,10 @@ $teams = $teamManager->findAll();
                     </div>
                 </div>
 
-
             </div>
-
+            <?php include "includes/footer.php"; ?>
         </div>
     </main>
-
 </body>
 
 </html>

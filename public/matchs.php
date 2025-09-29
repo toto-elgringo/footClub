@@ -1,12 +1,8 @@
 <?php
-require_once __DIR__ . "/classes/Match.php";
-require_once __DIR__ . "/classes/manager/MatchManager.php";
-require_once __DIR__ . "/classes/manager/OpposingClubManager.php";
-require_once __DIR__ . "/classes/manager/TeamManager.php";
+include "includes/navbar.php";
 
-$matchManager = new MatchManager();
-$teamManager = new TeamManager();
-$opposingClubManager = new OpposingClubManager();
+use src\Model\OpposingClub;
+use src\Model\FootballMatch;
 
 $matchs = $matchManager->findAll();
 $opposing_clubs = $opposingClubManager->findAll();
@@ -37,8 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $error[] = "Erreur lors de l'ajout du club : " . $e->getMessage();
             }
         }
-    } 
-    
+    }
+
     if (isset($_POST['team_id'], $_POST['match_date'], $_POST['opposing_club_id'])) {
         $team_id = (int)$_POST['team_id'];
         $team_score = (int)$_POST['team_score'];
@@ -87,8 +83,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <main>
-        <?php include "includes/navbar.php"; ?>
-
         <div class="container">
 
             <div class="header">
@@ -119,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
 
                         <div class="form-group">
-                            <label for="new_club_address">Adresse (optionnel)</label>
+                            <label for="new_club_address">Adresse</label>
                             <input type="text" name="new_club_address" id="new_club_address" required>
                         </div>
 
@@ -268,12 +262,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php endif; ?>
                 </div>
             </div>
-        </div>
 
-
+            <?php include "includes/footer.php"; ?>
         </div>
     </main>
-
     <script src="js/script.js"></script>
 </body>
 
