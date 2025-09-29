@@ -1,0 +1,23 @@
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.staff-card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    gap: 1rem;
+}
+
+img {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: #e5e7eb;
+    object-fit: cover;
+}

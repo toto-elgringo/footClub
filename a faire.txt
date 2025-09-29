@@ -1,0 +1,2 @@
+faire toute les vérifications en php comme sur match.php
+pour le helper bien bien l'intégrer pour staff et joueurs

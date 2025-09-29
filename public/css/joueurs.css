@@ -1,0 +1,103 @@
+.search form{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 50px;
+    gap: 10px;
+}
+
+.search input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+.search button {
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+.search button:hover {
+    background-color: #25960a;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.player-card {
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative; /* Pour le compteur de débogage */
+}
+
+.player-card .card-header {
+    display: flex;
+    gap: 1rem;
+}
+
+.player-card img {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: #e5e7eb;
+    object-fit: cover;
+}
+
+.appartient-equipe {
+    display: flex;
+    gap: 1rem;
+}
+
+.equipe-bubble {
+    background-color: #f5f5f5;
+    padding: 5px 10px;
+    border-radius: 10px;
+    width: fit-content;
+}
+
+.ajouter-equipe {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.ajouter-equipe form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.ajouter-equipe select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    font-size: 14px;
+    min-width: 150px;
+}
+
+.ajouter-equipe .submit-button {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.ajouter-equipe .submit-button:hover {
+    background-color: #45a049;
+}
+
