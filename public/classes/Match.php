@@ -1,5 +1,4 @@
 <?php
-
 class FootballMatch {
     private ?int $id;
     private DateTime $date;
