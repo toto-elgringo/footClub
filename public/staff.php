@@ -7,6 +7,23 @@ $staffs = $staffMemberManager->findAll();
 
 $error = [];
 
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
+    $id = (int) $_POST['id'];
+
+    $staffMemberToDelete = $staffMemberManager->findById($id);
+
+    if ($staffMemberToDelete instanceof src\Model\StaffMember) {
+        if ($staffMemberManager->delete($staffMemberToDelete)) {
+            header("Location: staff.php");
+            exit;
+        } else {
+            $error[] = "La suppression a échoué.";
+        }
+    } else {
+        $error[] = "Membre du staff introuvable.";
+    }
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $first_name = trim($_POST['first-name']);
     $last_name = trim($_POST['last-name']);
@@ -110,17 +127,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="dashboard">
                 <?php if (!empty($staffs)): ?>
                     <?php foreach ($staffs as $staff): ?>
-                        <div class="staff-card card">
+                        <div class="staff-card card" data-type="staff" data-id="<?php echo $staff->getId(); ?>">
                             <div class="staff-card-picture">
                                 <img src="<?php echo htmlspecialchars($staff->getPicture()); ?>" alt="<?php echo htmlspecialchars($staff->getFirstname() . ' ' . $staff->getLastname()); ?>">
                             </div>
 
                             <div class="staff-card-body">
-                                <h3 class="staff-card-title"><?php echo htmlspecialchars($staff->getFirstname() . ' ' . $staff->getLastname()); ?></h3>
+                                <h3 class="staff-card-title" id="staff-name"><?php echo htmlspecialchars($staff->getFirstname() . ' ' . $staff->getLastname()); ?></h3>
                                 <div class="staff-card-role">
                                     <?php echo htmlspecialchars($staff->getRole() ?: 'Membre du staff'); ?>
                                 </div>
+                                <div>
+                                    <span class="delete">✕</span>
+                                    <form method="post" action="staff.php" class="delete-staff-form delete-form" style="display:none;">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="<?php echo $staff->getId(); ?>">
+                                    </form>
+                                </div>
                             </div>
+
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>

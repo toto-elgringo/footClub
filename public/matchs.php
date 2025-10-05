@@ -11,6 +11,23 @@ $teams = $teamManager->findAllTeams();
 
 $error = [];
 
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
+    $id = (int) $_POST['id'];
+
+    $matchToDelete = $matchManager->findById($id);
+
+    if ($matchToDelete instanceof src\Model\FootballMatch) {
+        if ($matchManager->delete($matchToDelete)) {
+            header("Location: matchs.php");
+            exit;
+        } else {
+            $error[] = "La suppression a échoué.";
+        }
+    } else {
+        $error[] = "Match introuvable.";
+    }
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST['new_club_city']) || isset($_POST['new_club_address'])) {
@@ -195,9 +212,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $opposingClub = $opposingClubManager->findById($match->getOpposingClubId());
                             $opponent_name = $opposingClub ? $opposingClub->getCity() : 'Club inconnu';
                         ?>
-                            <div class="match-card card <?php echo $is_past ? ($is_win ? 'win' : ($is_draw ? 'draw' : 'lose')) : ''; ?>"> <!-- pour la statu line -->
+                            <div class="match-card card <?php echo $is_past ? ($is_win ? 'win' : ($is_draw ? 'draw' : 'lose')) : ''; ?>" data-type="match" data-id="<?php echo $match->getId(); ?>"> <!-- pour la statu line -->
                                 <div class="match-date">
                                     <?php echo $match_date->format('d/m/Y'); ?>
+                                    <span class="delete">✕</span>
+                                    <form method="post" action="matchs.php" class="delete-player-form delete-form" style="display:none;">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="<?php echo $match->getId(); ?>">
+                                    </form>
                                 </div>
                                 <div class="match-content">
                                     <div class="match-teams">

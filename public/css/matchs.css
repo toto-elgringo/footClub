@@ -166,3 +166,10 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+
+.card .delete {
+  top: 0;
+  right: 15px;
+}

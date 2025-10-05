@@ -70,15 +70,11 @@ class TeamManager {
 
     public function insert(Team $team): bool {
         $stmt = $this->db->prepare("INSERT INTO team (name) VALUES (:name)");
-        $result = $stmt->execute([
-            "name" => $team->getName()
-        ]);
-        
-        if ($result) {
-            $team->setId((int)$this->db->lastInsertId());
-            return true;
-        }
-        
-        return false;
+        return $stmt->execute(["name" => $team->getName()]);
+    }
+
+    public function delete(Team $team): bool {
+        $stmt = $this->db->prepare("DELETE FROM team WHERE id = :id");
+        return $stmt->execute(["id" => $team->getId()]);
     }
 }

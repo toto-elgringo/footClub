@@ -11,6 +11,24 @@ $playerTeam = $playerTeamManager->findAll();
 
 $error = [];
 
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
+    $id = (int) $_POST['id'];
+
+    $playerToDelete = $playerManager->findById($id);
+
+    if ($playerToDelete instanceof src\Model\Player) { // on vérifie si la variable $playerToDelete est une instance de la classe Player, instanceof est un test de type en PHP orienté objet.
+        if ($playerManager->delete($playerToDelete)) {
+            header("Location: joueurs.php");
+            exit;
+        } else {
+            $error[] = "La suppression a échoué.";
+        }
+    } else {
+        $error[] = "Joueur introuvable.";
+    }
+}
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['player_id'], $_POST['team_id'], $_POST['role'])) {
     $player_id = trim($_POST['player_id']);
     $team_id = trim($_POST['team_id']);
@@ -61,6 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
         }
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -121,18 +140,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
             <div class="dashboard">
 
                 <?php foreach ($players as $player) { ?>
-
-                    <div class="player-card card">
-                        <div class="card-header">
-                            <img src="uploads/<?php echo htmlspecialchars($player->getPicture()); ?>" alt="Photo de <?php echo htmlspecialchars($player->getFirstname() . ' ' . $player->getLastname()); ?>" class="player-image">
+                    <a href="joueurs.php?id=<?php echo $player->getId(); ?>">
+                        <div class="player-card card" data-type="player" data-id="<?php echo $player->getId(); ?>">
+                            <div class="card-header">
+                                <img src="uploads/<?php echo htmlspecialchars($player->getPicture()); ?>" alt="Photo de <?php echo htmlspecialchars($player->getFirstname() . ' ' . $player->getLastname()); ?>" class="player-image">
                             <div class="card-header-title">
                                 <h2 id="player-name"><?php echo $player->getFirstname() . " " . $player->getLastname(); ?></h2>
+
                                 <?php
                                 $age = $playerManager->getAge($player);
                                 ?>
                                 <p><?php echo $age; ?> ans</p>
                             </div>
+                            <span class="delete">✕</span>
+                            <form method="post" action="joueurs.php" class="delete-player-form delete-form" style="display:none;">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id" value="<?php echo $player->getId(); ?>">
+                            </form>
                         </div>
+                    </a>
 
                         <?php
                         // filtre les équipes qui appartiennent au joueur actuel

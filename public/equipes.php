@@ -8,6 +8,23 @@ $teamsWithCount = $teamManager->findAllWithPlayerCount();
 
 $error = [];
 
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
+    $id = (int) $_POST['id'];
+
+    $teamToDelete = $teamManager->findById($id);
+
+    if ($teamToDelete instanceof src\Model\Team) {
+        if ($teamManager->delete($teamToDelete)) {
+            header("Location: equipes.php");
+            exit;
+        } else {
+            $error[] = "La suppression a échoué.";
+        }
+    } else {
+        $error[] = "Equipe introuvable.";
+    }
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nom = trim($_POST["nom"]);
 
@@ -78,10 +95,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $team = $teamData['team']->getName();
                     $playerCount = $teamData['player_count']; ?>
 
-                    <div class="equipe-card card">
+                    <div class="equipe-card card" data-type="team" data-id="<?php echo $teamData['team']->getId(); ?>">
                         <div class="card-header">
                             <div class="card-header-title">
                                 <h2><?php echo $team; ?></h2>
+                                <span class="delete">✕</span>
+                                <form method="post" action="equipes.php" class="delete-player-form delete-form" style="display:none;">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<?php echo $teamData['team']->getId(); ?>">
+                                </form>
                             </div>
                         </div>
 

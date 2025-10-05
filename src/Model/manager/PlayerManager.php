@@ -38,6 +38,22 @@ class PlayerManager {
         return $now->diff($player->getBirthdate())->y;
     }
 
+    public function findById(int $id): ?Player {
+        $stmt = $this->db->prepare("SELECT * FROM player WHERE id = ?");
+        $stmt->execute([$id]);
+        $row = $stmt->fetch();
+        if ($row) {
+            return new Player(
+                $row['id'],
+                $row['firstname'],
+                $row['lastname'],
+                $row['birthdate'],
+                $row['picture']
+            );
+        }
+        return null;
+    }
+
     public function insert(Player $player): bool {
         $stmt = $this->db->prepare("INSERT INTO player (firstname, lastname, birthdate, picture) VALUES (?, ?, ?, ?)");
         return $stmt->execute([
@@ -46,5 +62,10 @@ class PlayerManager {
             $player->getBirthdate()->format("Y-m-d"),
             $player->getPicture()
         ]);
+    }
+
+    public function delete(Player $player): bool {
+        $stmt = $this->db->prepare("DELETE FROM player WHERE id = ?");
+        return $stmt->execute([$player->getId()]);
     }
 }

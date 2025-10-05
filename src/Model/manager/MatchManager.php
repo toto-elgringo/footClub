@@ -39,6 +39,33 @@ class MatchManager {
         return $matches;
     }
 
+    public function findById(int $id): ?FootballMatch {
+        $query = "
+            SELECT m.*
+            FROM `match` m
+            WHERE m.id = :id
+        ";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute(['id' => $id]);
+
+        $data = $stmt->fetch();
+
+        if ($data) {
+            return new FootballMatch(
+                $data['id'],
+                $data['date'],
+                $data['city'],
+                $data['team_score'],
+                $data['opponent_score'],
+                $data['team_id'],
+                $data['opposing_club_id']
+            );
+        }
+
+        return null;
+    }
+
     public function insert(FootballMatch $match): bool {
         $stmt = $this->db->prepare("INSERT INTO `match` (date, city, team_score, opponent_score, team_id, opposing_club_id) VALUES (?, ?, ?, ?, ?, ?)");
         return $stmt->execute([
@@ -49,5 +76,10 @@ class MatchManager {
             $match->getTeamId(),
             $match->getOpposingClubId()
         ]);
+    }
+
+    public function delete(FootballMatch $match): bool {
+        $stmt = $this->db->prepare("DELETE FROM `match` WHERE id = :id");
+        return $stmt->execute(['id' => $match->getId()]);
     }
 }
