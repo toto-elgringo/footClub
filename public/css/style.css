@@ -87,6 +87,10 @@ main {
     font-size: 25px;
 }
 
+.card .delete:hover {
+    color: #ff0000;
+}
+
 footer {
     width: 100%;
     text-align: center;

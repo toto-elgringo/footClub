@@ -2,6 +2,7 @@
 include "includes/navbar.php";
 
 use src\Model\StaffMember;
+use src\function\UploadPicture;
 
 $staffs = $staffMemberManager->findAll();
 

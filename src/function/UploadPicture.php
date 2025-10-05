@@ -1,76 +1,25 @@
 <?php
 
-class UploadPicture
-{
-    
-    public static function upload(array $file, string $prefix = 'file_'): array
-    {
+namespace src\function;
 
-        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
-            return [
-                'success' => false,
-                'path' => null,
-                'error' => 'Aucun fichier téléchargé ou fichier invalide.'
-            ];
+final class UploadPicture {
+    public static function upload(array $file, string $prefix = 'player_'): array {
+        if (!isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) {
+            return ['success' => false, 'error' => 'Fichier invalide ou upload échoué.'];
         }
+        $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION) ?: 'jpg');
+        $name = $prefix . bin2hex(random_bytes(8)) . '.' . $ext;
 
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $file['tmp_name']);
-
-        $allowedMimeTypes = [
-            'image/jpeg' => 'jpg',
-            'image/png' => 'png',
-            'image/gif' => 'gif',
-            'image/webp' => 'webp'
-        ];
-
-        if (!array_key_exists($mimeType, $allowedMimeTypes)) {
-            return [
-                'success' => false,
-                'path' => null,
-                'error' => 'Type de fichier non autorisé. Types acceptés : ' . implode(', ', array_unique($allowedMimeTypes))
-            ];
+        $destDir = __DIR__ . '/../../public/uploads/';
+        if (!is_dir($destDir)) {
+            @mkdir($destDir, 0775, true);
         }
+        $dest = $destDir . $name;
 
-        $uploadDir = __DIR__ . '/../../public/uploads/';
-        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
-            return [
-                'success' => false,
-                'path' => null,
-                'error' => 'Impossible de créer le répertoire de destination.'
-            ];
+        if (!move_uploaded_file($file['tmp_name'], $dest)) {
+            return ['success' => false, 'error' => 'Impossible de déplacer le fichier.'];
         }
-
-        $extension = $allowedMimeTypes[$mimeType];
-        $newFileName = $prefix . uniqid('', true) . '.' . $extension;
-        $destination = $uploadDir . $newFileName;
-        $relativePath = 'uploads/' . $newFileName;
-
-        if (move_uploaded_file($file['tmp_name'], $destination)) {
-            if (@getimagesize($destination) === false) {
-                unlink($destination);
-                return [
-                    'success' => false,
-                    'path' => null,
-                    'error' => 'Le fichier téléchargé n\'est pas une image valide.'
-                ];
-            }
-
-            chmod($destination, 0644);
-
-            return [
-                'success' => true,
-                'path' => $relativePath,
-                'full_path' => $destination,
-                'filename' => $newFileName,
-                'error' => null
-            ];
-        }
-
-        return [
-            'success' => false,
-            'path' => null,
-            'error' => 'Une erreur est survenue lors du déplacement du fichier téléchargé.'
-        ];
+        return ['success' => true, 'filename' => $name];
     }
 }
+

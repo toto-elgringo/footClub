@@ -1,16 +1,15 @@
 <?php
-include "autoloader.php";
-include "../src/function/UploadPicture.php";
+require_once __DIR__ . '/../autoloader.php';
+require_once __DIR__ . '/../../src/function/UploadPicture.php';
 
-$playerManager = new src\Model\manager\PlayerManager();
-$teamManager = new src\Model\manager\TeamManager();
-$playerTeamManager = new src\Model\manager\PlayerTeamManager();
-$opposingClubManager = new src\Model\manager\OpposingClubManager();
+$playerManager      = new src\Model\manager\PlayerManager();
+$teamManager        = new src\Model\manager\TeamManager();
+$playerTeamManager  = new src\Model\manager\PlayerTeamManager();
+$opposingClubManager= new src\Model\manager\OpposingClubManager();
 $staffMemberManager = new src\Model\manager\StaffMemberManager();
-$matchManager = new src\Model\manager\MatchManager();
-
-
+$matchManager       = new src\Model\manager\MatchManager();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
