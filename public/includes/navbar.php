@@ -31,7 +31,7 @@ $matchManager       = new src\Model\manager\MatchManager();
 nav {
     width: 20vw;
     min-width: 250px;
-    height: 100vh;
+    min-height: 100vh;
     box-shadow: 10px 0px 15px rgba(0, 0, 0, 0.1);
     padding: 25px;
 }
