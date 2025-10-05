@@ -82,4 +82,17 @@ class MatchManager {
         $stmt = $this->db->prepare("DELETE FROM `match` WHERE id = :id");
         return $stmt->execute(['id' => $match->getId()]);
     }
+
+    public function update(FootballMatch $match): bool {
+        $stmt = $this->db->prepare("UPDATE `match` SET date = ?, city = ?, team_score = ?, opponent_score = ?, team_id = ?, opposing_club_id = ? WHERE id = ?");
+        return $stmt->execute([
+            $match->getDate()->format("Y-m-d H:i:s"),
+            $match->getCity(),
+            $match->getTeamScore(),
+            $match->getOpponentScore(),
+            $match->getTeamId(),
+            $match->getOpposingClubId(),
+            $match->getId()
+        ]);
+    }
 }

@@ -63,4 +63,15 @@ class StaffMemberManager {
         $stmt = $this->db->prepare("DELETE FROM staff_member WHERE id = :id");
         return $stmt->execute(["id" => $staffMember->getId()]);
     }
+
+    public function update(StaffMember $staffMember): bool {
+        $stmt = $this->db->prepare("UPDATE staff_member SET firstname = ?, lastname = ?, role = ?, picture = ? WHERE id = ?");
+        return $stmt->execute([
+            $staffMember->getFirstname(),
+            $staffMember->getLastname(),
+            $staffMember->getRole(),
+            $staffMember->getPicture(),
+            $staffMember->getId()
+        ]);
+    }
 }

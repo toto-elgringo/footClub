@@ -140,88 +140,85 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
             <div class="dashboard">
 
                 <?php foreach ($players as $player) { ?>
-                    <a href="joueurs.php?id=<?php echo $player->getId(); ?>">
-                        <div class="player-card card" data-type="player" data-id="<?php echo $player->getId(); ?>">
+                    <div class="player-card card" data-type="player" data-id="<?php echo $player->getId(); ?>">
+                        <a href="update/joueursUpdate.php?id=<?php echo $player->getId(); ?>" class="player-card-link">
                             <div class="card-header">
                                 <img src="uploads/<?php echo htmlspecialchars($player->getPicture()); ?>" alt="Photo de <?php echo htmlspecialchars($player->getFirstname() . ' ' . $player->getLastname()); ?>" class="player-image">
-                            <div class="card-header-title">
-                                <h2 id="player-name"><?php echo $player->getFirstname() . " " . $player->getLastname(); ?></h2>
-
-                                <?php
-                                $age = $playerManager->getAge($player);
-                                ?>
-                                <p><?php echo $age; ?> ans</p>
+                                <div class="card-header-title">
+                                    <h2 id="player-name"><?php echo $player->getFirstname() . " " . $player->getLastname(); ?></h2>
+                                    <?php $age = $playerManager->getAge($player); ?>
+                                    <p><?php echo $age; ?> ans</p>
+                                </div>
                             </div>
-                            <span class="delete">✕</span>
-                            <form method="post" action="joueurs.php" class="delete-player-form delete-form" style="display:none;">
-                                <input type="hidden" name="action" value="delete">
-                                <input type="hidden" name="id" value="<?php echo $player->getId(); ?>">
-                            </form>
-                        </div>
-                    </a>
-
-                        <?php
-                        // filtre les équipes qui appartiennent au joueur actuel
-                        $player_teams = [];
-                        foreach ($playerTeam as $item) {
-                            $teamRelation = $item['playerTeam'];
-                            if ($teamRelation->getPlayerId() == $player->getId()) {
-                                $team = $teamManager->findById($teamRelation->getTeamId());
-                                if ($team) {
-                                    $player_teams[] = (object)[
-                                        'team_name' => $team->getName(),
-                                        'role' => $teamRelation->getRole()
-                                    ];
-                                }
+                        </a>
+                        <span class="delete">✕</span>
+                        <form method="post" action="joueurs.php" class="delete-player-form delete-form" style="display:none;">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="id" value="<?php echo $player->getId(); ?>">
+                        </form>
+                    <?php
+                    // filtre les équipes qui appartiennent au joueur actuel
+                    $player_teams = [];
+                    foreach ($playerTeam as $item) {
+                        $teamRelation = $item['playerTeam'];
+                        if ($teamRelation->getPlayerId() == $player->getId()) {
+                            $team = $teamManager->findById($teamRelation->getTeamId());
+                            if ($team) {
+                                $player_teams[] = (object)[
+                                    'team_name' => $team->getName(),
+                                    'role' => $teamRelation->getRole()
+                                ];
                             }
                         }
+                    }
 
-                        // affiche les équipes seulement s'il y en a
-                        if (!empty($player_teams)): ?>
-                            <div class="appartient-equipe">
-                                <?php foreach ($player_teams as $equipe): ?>
-                                    <div class="equipe-bubble">
-                                        <?php echo htmlspecialchars($equipe->team_name . ' - ' . $equipe->role); ?>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <div class="ajouter-equipe">
-                            <form action="joueurs.php" method="post">
-                                <input type="hidden" name="player_id" value="<?php echo $player->getId(); ?>">
-                                <select name="team_id" id="team_<?php echo $player->getId(); ?>" required>
-                                    <option value="">Sélectionner une équipe</option>
-                                    <?php foreach ($teams as $team) { // évite d'afficher les équipes auxquelles le joueur appartient déjà, ce qui empêche de l'ajouter plusieurs fois à la même équipe
-                                        $isInTeam = false;
-                                        foreach ($playerTeam as $item) {
-                                            $data = $item['playerTeam'];
-                                            if ($data->getPlayerId() == $player->getId() && $data->getTeamId() == $team->getId()) {
-                                                $isInTeam = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!$isInTeam) { ?>
-                                            <option value="<?php echo $team->getId(); ?>"><?php echo htmlspecialchars($team->getName()); ?></option>
-                                        <?php } ?>
-                                    <?php } ?>
-                                </select>
-                                <select name="role" id="role_<?php echo $player->getId(); ?>" required>
-                                    <option value="">Sélectionner un rôle</option>
-                                    <option value="Gardien">Gardien</option>
-                                    <option value="Défenseur">Défenseur</option>
-                                    <option value="Milieu">Milieu</option>
-                                    <option value="Attaquant">Attaquant</option>
-                                </select>
-                                <button type="submit" class="submit-button">Ajouter</button>
-                            </form>
+                    // affiche les équipes seulement s'il y en a
+                    if (!empty($player_teams)): ?>
+                        <div class="appartient-equipe">
+                            <?php foreach ($player_teams as $equipe): ?>
+                                <div class="equipe-bubble">
+                                    <?php echo htmlspecialchars($equipe->team_name . ' - ' . $equipe->role); ?>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
+                    <?php endif; ?>
+
+                    </a>
+                    <div class="ajouter-equipe">
+                        <form action="joueurs.php" method="post">
+                            <input type="hidden" name="player_id" value="<?php echo $player->getId(); ?>">
+                            <select name="team_id" id="team_<?php echo $player->getId(); ?>" required>
+                                <option value="">Sélectionner une équipe</option>
+                                <?php foreach ($teams as $team) { // évite d'afficher les équipes auxquelles le joueur appartient déjà, ce qui empêche de l'ajouter plusieurs fois à la même équipe
+                                    $isInTeam = false;
+                                    foreach ($playerTeam as $item) {
+                                        $data = $item['playerTeam'];
+                                        if ($data->getPlayerId() == $player->getId() && $data->getTeamId() == $team->getId()) {
+                                            $isInTeam = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!$isInTeam) { ?>
+                                        <option value="<?php echo $team->getId(); ?>"><?php echo htmlspecialchars($team->getName()); ?></option>
+                                    <?php } ?>
+                                <?php } ?>
+                            </select>
+                            <select name="role" id="role_<?php echo $player->getId(); ?>" required>
+                                <option value="">Sélectionner un rôle</option>
+                                <option value="Gardien">Gardien</option>
+                                <option value="Défenseur">Défenseur</option>
+                                <option value="Milieu">Milieu</option>
+                                <option value="Attaquant">Attaquant</option>
+                            </select>
+                            <button type="submit" class="submit-button">Ajouter</button>
+                        </form>
                     </div>
-                <?php
-                }
-                ?>
             </div>
-            <?php include "includes/footer.php"; ?>
+        <?php
+                }
+        ?>
+        </div>
+        <?php include "includes/footer.php"; ?>
         </div>
     </main>
     <script src="js/script.js"></script>

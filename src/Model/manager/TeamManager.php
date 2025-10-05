@@ -77,4 +77,12 @@ class TeamManager {
         $stmt = $this->db->prepare("DELETE FROM team WHERE id = :id");
         return $stmt->execute(["id" => $team->getId()]);
     }
+
+    public function update(Team $team): bool {
+        $stmt = $this->db->prepare("UPDATE team SET name = ? WHERE id = ?");
+        return $stmt->execute([
+            $team->getName(),
+            $team->getId()
+        ]);
+    }
 }

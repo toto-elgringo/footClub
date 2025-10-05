@@ -68,4 +68,15 @@ class PlayerManager {
         $stmt = $this->db->prepare("DELETE FROM player WHERE id = ?");
         return $stmt->execute([$player->getId()]);
     }
+
+    public function update(Player $player): bool {
+        $stmt = $this->db->prepare("UPDATE player SET firstname = ?, lastname = ?, birthdate = ?, picture = ? WHERE id = ?");
+        return $stmt->execute([
+            $player->getFirstname(),
+            $player->getLastname(),
+            $player->getBirthdate()->format("Y-m-d"),
+            $player->getPicture(),
+            $player->getId()
+        ]);
+    }
 }
