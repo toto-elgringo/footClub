@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../src/function/UploadPicture.php';
 $playerManager      = new src\Model\manager\PlayerManager();
 $teamManager        = new src\Model\manager\TeamManager();
 $playerTeamManager  = new src\Model\manager\PlayerTeamManager();
-$opposingClubManager= new src\Model\manager\OpposingClubManager();
+$opposingClubManager = new src\Model\manager\OpposingClubManager();
 $staffMemberManager = new src\Model\manager\StaffMemberManager();
 $matchManager       = new src\Model\manager\MatchManager();
 ?>
@@ -13,7 +13,6 @@ $matchManager       = new src\Model\manager\MatchManager();
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,50 +22,50 @@ $matchManager       = new src\Model\manager\MatchManager();
 
 <style>
     * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-nav {
-    width: 20vw;
-    min-width: 250px;
-    min-height: 100vh;
-    box-shadow: 10px 0px 15px rgba(0, 0, 0, 0.1);
-    padding: 25px;
-}
+    nav {
+        width: 20vw;
+        min-width: 250px;
+        min-height: 100vh;
+        box-shadow: 10px 0px 15px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+    }
 
-.nav-title {
-    display: flex;
-    align-items: center;
-    margin-bottom: 50px;
-}
+    .nav-title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 50px;
+    }
 
-.nav-title svg {
-    background-color: #37c60f;
-    border-radius: 100%;
-    padding: 10px;
-    fill: white;
-    width: 50px;
-    height: 50px;
-}
+    .nav-title svg {
+        background-color: #37c60f;
+        border-radius: 100%;
+        padding: 10px;
+        fill: white;
+        width: 50px;
+        height: 50px;
+    }
 
-.nav-title-text {
-    margin-left: 10px;
-}
+    .nav-title-text {
+        margin-left: 10px;
+    }
 
-nav ul {
-    list-style: none;
-}
+    nav ul {
+        list-style: none;
+    }
 
-nav ul li {
-    margin-bottom: 10px;
-}
+    nav ul li {
+        margin-bottom: 10px;
+    }
 
-nav ul li a {
-    text-decoration: none;
-    color: black;
-}
+    nav ul li a {
+        text-decoration: none;
+        color: black;
+    }
 </style>
 
 <body>

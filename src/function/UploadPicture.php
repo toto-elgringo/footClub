@@ -2,7 +2,7 @@
 
 namespace src\function;
 
-final class UploadPicture {
+class UploadPicture {
     public static function upload(array $file, string $prefix = 'player_'): array {
         if (!isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) {
             return ['success' => false, 'error' => 'Fichier invalide ou upload échoué.'];
@@ -22,4 +22,3 @@ final class UploadPicture {
         return ['success' => true, 'filename' => $name];
     }
 }
-
