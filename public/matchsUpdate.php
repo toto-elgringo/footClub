@@ -3,13 +3,9 @@ require_once __DIR__ . '/includes/navbar.php';
 
 use src\Model\FootballMatch;
 
-// Récupération du match à modifier
 $match = $matchManager->findById($_GET['id']);
 
-// Récupération de la liste des équipes
 $teams = $teamManager->findAll();
-
-// Récupération de la liste des clubs adverses
 $opposing_clubs = $opposingClubManager->findAll();
 
 $errors = [];

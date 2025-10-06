@@ -213,16 +213,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $opponent_name = $opposingClub ? $opposingClub->getCity() : 'Club inconnu';
                         ?>
                             <div class="match-card card <?php echo $is_past ? ($is_win ? 'win' : ($is_draw ? 'draw' : 'lose')) : ''; ?>" data-type="match" data-id="<?php echo $match->getId(); ?>"> <!-- pour la statu line -->
+                                <span class="delete">✕</span>
+                                <form method="post" action="matchs.php" class="delete-player-form delete-form" style="display:none;">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<?php echo $match->getId(); ?>">
+                                </form>
                                 <a href="matchsUpdate.php?id=<?php echo $match->getId(); ?>" class="match-card-link">
                                     <div class="match-date">
-                                        <span class="delete">✕</span>
-                                        <form method="post" action="matchs.php" class="delete-player-form delete-form" style="display:none;">
-                                            <input type="hidden" name="action" value="delete">
-                                            <input type="hidden" name="id" value="<?php echo $match->getId(); ?>">
-                                        </form>
                                         <?php echo $match_date->format('d/m/Y'); ?>
                                     </div>
-                                    <div class="match-content">
+                                </a>
+                                <div class="match-content">
                                         <div class="match-teams">
                                             <!-- equipe a domicile -->
                                             <div class="team-row">
