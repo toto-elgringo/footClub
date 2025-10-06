@@ -55,14 +55,4 @@ class PlayerTeamManager
             $link->getRole()
         ]);
     }
-
-    // public function delete(PlayerTeam $link): bool
-    // {
-    //     $stmt = $this->db->prepare("DELETE FROM player_has_team WHERE player_id = ? AND team_id = ?");
-    //     return $stmt->execute([
-    //         $link->getPlayerId(),
-    //         $link->getTeamId()
-    //     ]);
-    // }
-    // faire en sorte que supprimer les player has team
 }

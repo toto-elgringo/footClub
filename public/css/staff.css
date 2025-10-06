@@ -14,10 +14,29 @@
     gap: 1rem;
 }
 
-img {
+.staff-card-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.staff-card-picture img {
     width: 44px;
     height: 44px;
     border-radius: 999px;
     background: #e5e7eb;
     object-fit: cover;
+}
+
+
+
+
+.update-container select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    font-size: 14px;
+    min-width: 150px;
+    max-width: 400px;
 }

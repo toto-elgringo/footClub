@@ -10,6 +10,11 @@ body {
     display: flex;
 }
 
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
 .error {
     color: red;
     margin-bottom: 15px;
@@ -97,4 +102,50 @@ footer {
     padding: 20px;
     background-color: #fff;
     margin-top: auto;
+}
+
+.update-container form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.update-container form input,
+.update-container form select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    font-size: 14px;
+    min-width: 150px;
+    max-width: 400px;
+}
+
+.update-container img {
+    width: 400px;
+    height: 400px;
+    object-fit: cover;
+}
+
+.update-container button,
+.update-container .cancel {
+    display: flex;
+    padding: 8px 16px;
+    color: black;
+    background-color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    min-width: 150px;
+    max-width: 400px;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.update-container button:hover,
+.update-container .cancel:hover {
+    background-color: #4CAF50;
+    color: white;
 }

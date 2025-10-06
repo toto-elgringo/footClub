@@ -213,72 +213,74 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $opponent_name = $opposingClub ? $opposingClub->getCity() : 'Club inconnu';
                         ?>
                             <div class="match-card card <?php echo $is_past ? ($is_win ? 'win' : ($is_draw ? 'draw' : 'lose')) : ''; ?>" data-type="match" data-id="<?php echo $match->getId(); ?>"> <!-- pour la statu line -->
-                                <div class="match-date">
-                                    <?php echo $match_date->format('d/m/Y'); ?>
-                                    <span class="delete">✕</span>
-                                    <form method="post" action="matchs.php" class="delete-player-form delete-form" style="display:none;">
-                                        <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="id" value="<?php echo $match->getId(); ?>">
-                                    </form>
-                                </div>
-                                <div class="match-content">
-                                    <div class="match-teams">
-                                        <!-- equipe a domicile -->
-                                        <div class="team-row">
-                                            <div class="team">
+                                <a href="matchsUpdate.php?id=<?php echo $match->getId(); ?>" class="match-card-link">
+                                    <div class="match-date">
+                                        <span class="delete">✕</span>
+                                        <form method="post" action="matchs.php" class="delete-player-form delete-form" style="display:none;">
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="id" value="<?php echo $match->getId(); ?>">
+                                        </form>
+                                        <?php echo $match_date->format('d/m/Y'); ?>
+                                    </div>
+                                    <div class="match-content">
+                                        <div class="match-teams">
+                                            <!-- equipe a domicile -->
+                                            <div class="team-row">
+                                                <div class="team">
+                                                    <?php
+                                                    $team = $teamManager->findById($match->getTeamId());
+                                                    $teamName = $team ? htmlspecialchars($team->getName()) : 'Équipe inconnue';
+                                                    ?>
+                                                    <span class="team-name"><?php echo $teamName; ?></span>
+                                                </div>
+                                                <?php if ($is_past): ?>
+                                                    <span class="score"><?php echo $match->getTeamScore(); ?></span>
+                                                <?php else: ?>
+                                                    <span class="score">-</span>
+                                                <?php endif; ?>
+                                            </div>
+
+                                            <div class="match-separator">
+                                                <span>VS</span>
+                                            </div>
+
+                                            <!-- equipe a adverse -->
+                                            <div class="team-row">
+                                                <div class="team">
+                                                    <span class="team-name"><?php echo htmlspecialchars($opponent_name); ?></span>
+                                                </div>
+                                                <?php if ($is_past): ?>
+                                                    <span class="score"><?php echo $match->getOpponentScore(); ?></span>
+                                                <?php else: ?>
+                                                    <span class="score">-</span>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="status-line"></div>
+                                    </div>
+
+                                    <!-- pied de carte -->
+                                    <div class="match-footer">
+                                        <div class="match-location">
+                                            <span>📍</span>
+                                            <span><?php echo htmlspecialchars($match->getCity()); ?></span>
+                                        </div>
+                                        <div class="match-status">
+                                            <?php if ($is_past): ?>
                                                 <?php
-                                                $team = $teamManager->findById($match->getTeamId());
-                                                $teamName = $team ? htmlspecialchars($team->getName()) : 'Équipe inconnue';
+                                                if ($is_draw) {
+                                                    echo 'Match nul';
+                                                } else {
+                                                    echo $is_win ? 'Victoire' : 'Défaite';
+                                                }
                                                 ?>
-                                                <span class="team-name"><?php echo $teamName; ?></span>
-                                            </div>
-                                            <?php if ($is_past): ?>
-                                                <span class="score"><?php echo $match->getTeamScore(); ?></span>
                                             <?php else: ?>
-                                                <span class="score">-</span>
-                                            <?php endif; ?>
-                                        </div>
-
-                                        <div class="match-separator">
-                                            <span>VS</span>
-                                        </div>
-
-                                        <!-- equipe a adverse -->
-                                        <div class="team-row">
-                                            <div class="team">
-                                                <span class="team-name"><?php echo htmlspecialchars($opponent_name); ?></span>
-                                            </div>
-                                            <?php if ($is_past): ?>
-                                                <span class="score"><?php echo $match->getOpponentScore(); ?></span>
-                                            <?php else: ?>
-                                                <span class="score">-</span>
+                                                À venir
                                             <?php endif; ?>
                                         </div>
                                     </div>
-
-                                    <div class="status-line"></div>
-                                </div>
-
-                                <!-- pied de carte -->
-                                <div class="match-footer">
-                                    <div class="match-location">
-                                        <span>📍</span>
-                                        <span><?php echo htmlspecialchars($match->getCity()); ?></span>
-                                    </div>
-                                    <div class="match-status">
-                                        <?php if ($is_past): ?>
-                                            <?php
-                                            if ($is_draw) {
-                                                echo 'Match nul';
-                                            } else {
-                                                echo $is_win ? 'Victoire' : 'Défaite';
-                                            }
-                                            ?>
-                                        <?php else: ?>
-                                            À venir
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
+                                </a>
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>

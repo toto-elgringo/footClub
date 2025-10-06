@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($uploadResult['success']) {
             try {
-                $staffMember = new StaffMember(null, $first_name, $last_name, $role, $uploadResult['path']);
+                $staffMember = new StaffMember(null, $first_name, $last_name, $role, $uploadResult['filename']);
 
                 if ($staffMemberManager->insert($staffMember)) {
                     header("Location: staff.php");
@@ -129,24 +129,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <?php if (!empty($staffs)): ?>
                     <?php foreach ($staffs as $staff): ?>
                         <div class="staff-card card" data-type="staff" data-id="<?php echo $staff->getId(); ?>">
-                            <div class="staff-card-picture">
-                                <img src="<?php echo htmlspecialchars($staff->getPicture()); ?>" alt="<?php echo htmlspecialchars($staff->getFirstname() . ' ' . $staff->getLastname()); ?>">
-                            </div>
-
+                            <span class="delete">✕</span>
+                            <form method="post" action="staff.php" class="delete-staff-form delete-form" style="display:none;">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id" value="<?php echo $staff->getId(); ?>">
+                            </form>
+                            <a href="staffUpdate.php?id=<?php echo $staff->getId(); ?>" class="staff-card-link">
+                                <div class="staff-card-picture">
+                                    <img src="uploads/<?php echo htmlspecialchars($staff->getPicture()); ?>" alt="<?php echo htmlspecialchars($staff->getFirstname() . ' ' . $staff->getLastname()); ?>">
+                                </div>
+                                
                             <div class="staff-card-body">
                                 <h3 class="staff-card-title" id="staff-name"><?php echo htmlspecialchars($staff->getFirstname() . ' ' . $staff->getLastname()); ?></h3>
                                 <div class="staff-card-role">
                                     <?php echo htmlspecialchars($staff->getRole() ?: 'Membre du staff'); ?>
                                 </div>
                                 <div>
-                                    <span class="delete">✕</span>
-                                    <form method="post" action="staff.php" class="delete-staff-form delete-form" style="display:none;">
-                                        <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="id" value="<?php echo $staff->getId(); ?>">
-                                    </form>
+                                    </div>
                                 </div>
-                            </div>
-
+                            </a>
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>

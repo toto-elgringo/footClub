@@ -96,17 +96,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $playerCount = $teamData['player_count']; ?>
 
                     <div class="equipe-card card" data-type="team" data-id="<?php echo $teamData['team']->getId(); ?>">
-                        <div class="card-header">
-                            <div class="card-header-title">
-                                <h2><?php echo $team; ?></h2>
-                                <span class="delete">✕</span>
-                                <form method="post" action="equipes.php" class="delete-player-form delete-form" style="display:none;">
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="id" value="<?php echo $teamData['team']->getId(); ?>">
-                                </form>
+                        <span class="delete">✕</span>
+                        <form method="post" action="equipes.php" class="delete-player-form delete-form" style="display:none;">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="id" value="<?php echo $teamData['team']->getId(); ?>">
+                        </form>
+                        <a href="equipesUpdate.php?id=<?php echo $teamData['team']->getId(); ?>" class="player-card-link">
+                            <div class="card-header">
+                                <div class="card-header-title">
+                                    <h2><?php echo $team; ?></h2>
+                                </div>
                             </div>
-                        </div>
-
+                        </a>
                         <div class="card-stat">
                             <div class="nombre-joueurs">
                                 <p><?php echo $playerCount; ?></p>
