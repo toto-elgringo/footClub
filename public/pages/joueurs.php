@@ -5,6 +5,7 @@ include "../includes/navbar.php";
 use Model\Classes\Player;
 use Model\Classes\PlayerTeam;
 use Model\Helper\UploadPicture;
+use Model\Enum\PlayerRole;
 
 $players = $playerManager->findAll();
 $teams = $teamManager->findAll();
@@ -33,7 +34,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['player_id'], $_POST['team_id'], $_POST['role'])) {
     $player_id = trim($_POST['player_id']);
     $team_id = trim($_POST['team_id']);
-    $role = trim($_POST['role']);
+    $roleStr = trim($_POST['role']);
+
+    // Convert the role string to a PlayerRole enum value
+    $role = PlayerRole::from($roleStr);
 
     if ($playerTeamManager->exists($player_id, $team_id)) {
         $error[] = "Le joueur appartient déjà à l'équipe";
@@ -178,7 +182,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
                             <div class="appartient-equipe">
                                 <?php foreach ($player_teams as $equipe): ?>
                                     <div class="equipe-bubble">
-                                        <?php echo htmlspecialchars($equipe->team_name . ' - ' . $equipe->role); ?>
+                                                                                            <!-- $equipe->role devient: -->
+                                        <?php echo htmlspecialchars($equipe->team_name . ' - ' . $equipe->role->value); ?>
                                     </div>
                                 <?php endforeach; ?>
                             </div>

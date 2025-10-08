@@ -1,6 +1,6 @@
 <?php
 
-namespace Model\manager;
+namespace Model\Manager;
 
 use Model\Classes\OpposingClub;
 use Model\Manager\ManagerInterface;

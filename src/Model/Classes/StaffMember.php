@@ -2,11 +2,14 @@
 
 namespace Model\Classes;
 
+use Model\Enum\StaffRole;
+// utilisation de l'énumération StaffRole
+
 class StaffMember extends Person
 {
-    private string $role;
+    private StaffRole $role;
 
-    public function __construct(?int $id, string $firstname, string $lastname, string $role, string $picture)
+    public function __construct(?int $id, string $firstname, string $lastname, StaffRole $role, string $picture) // utilisation de variable $role de type StaffRole
     {
         $this->id = $id;
         $this->firstname = $firstname;
@@ -27,7 +30,7 @@ class StaffMember extends Person
     {
         return $this->lastname;
     }
-    public function getRole(): string
+    public function getRole(): StaffRole // renvoi en type StaffRole
     {
         return $this->role;
     }
@@ -48,7 +51,7 @@ class StaffMember extends Person
     {
         $this->lastname = $lastname;
     }
-    public function setRole(string $role): void
+    public function setRole(StaffRole $role): void // paramètre $role de type StaffRole
     {
         $this->role = $role;
     }

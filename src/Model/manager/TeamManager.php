@@ -1,11 +1,12 @@
 <?php
 
-namespace Model\manager;
+namespace Model\Manager;
 
 use Model\Classes\Team;
 use Model\Manager\ManagerInterface;
 use Model\Trait\PdoTrait;
 use Model\Trait\InstanceOfTrait;
+
 
 class TeamManager implements ManagerInterface
 {

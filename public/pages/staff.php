@@ -3,6 +3,7 @@ include "../includes/navbar.php";
 
 use Model\Classes\StaffMember;
 use Model\Helper\UploadPicture;
+use Model\Enum\StaffRole;
 
 $staffs = $staffMemberManager->findAll();
 
@@ -38,7 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($uploadResult['success']) {
             try {
-                $staffMember = new StaffMember(null, $first_name, $last_name, $role, $uploadResult['filename']);
+                $staffMember = new StaffMember(null, $first_name, $last_name, StaffRole::from($role), $uploadResult['filename']);
+                                                                            //$role devient StaffRole::from($role)
 
                 if ($staffMemberManager->insert($staffMember)) {
                     header("Location: staff.php");
@@ -142,7 +144,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="staff-card-body">
                                 <h3 class="staff-card-title" id="staff-name"><?php echo htmlspecialchars($staff->getFirstname() . ' ' . $staff->getLastname()); ?></h3>
                                 <div class="staff-card-role">
-                                    <?php echo htmlspecialchars($staff->getRole() ?: 'Membre du staff'); ?>
+                                     <!-- echo htmlspecialchars($staff->getRole() ?: 'Membre du staff'); devient:  -->
+                                    <?php echo htmlspecialchars(($role = $staff->getRole()) ? $role->value : 'Membre du staff'); ?>
                                 </div>
                                 <div>
                                     </div>

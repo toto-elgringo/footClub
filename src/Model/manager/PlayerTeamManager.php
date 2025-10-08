@@ -1,12 +1,13 @@
 <?php
 
-namespace Model\manager;
+namespace Model\Manager;
 
 use Model\Classes\PlayerTeam;
 use Model\Manager\ManagerInterface;
 use Model\Trait\PdoTrait;
 use PDO;
 use Model\Trait\InstanceOfTrait;
+use Model\Enum\PlayerRole;
 
 class PlayerTeamManager implements ManagerInterface
 {
@@ -27,7 +28,7 @@ class PlayerTeamManager implements ManagerInterface
                 "playerTeam" => new PlayerTeam(
                     $data['player_id'],
                     $data['team_id'],
-                    $data['role']
+                    PlayerRole::from($data['role'])
                 ),
                 "team_name" => $data['team_name']
             ];
@@ -63,7 +64,7 @@ class PlayerTeamManager implements ManagerInterface
         return new PlayerTeam(
             $data['player_id'],
             $data['team_id'],
-            $data['role']
+            PlayerRole::from($data['role'])
         );
     }
 
@@ -75,7 +76,7 @@ class PlayerTeamManager implements ManagerInterface
         return $stmt->execute([
             $object->getPlayerId(),
             $object->getTeamId(),
-            $object->getRole()
+            $object->getRole()->value
         ]);
     }
 
@@ -95,7 +96,7 @@ class PlayerTeamManager implements ManagerInterface
         return $stmt->execute([
             $object->getPlayerId(),
             $object->getTeamId(),
-            $object->getRole(),
+            $object->getRole()->value,
             $object->getPlayerId(),
             $object->getTeamId()
         ]);

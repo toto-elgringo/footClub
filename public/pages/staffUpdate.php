@@ -3,6 +3,7 @@ require_once __DIR__ . '/../includes/navbar.php';
 
 use Model\Classes\StaffMember;
 use Model\Helper\UploadPicture;
+use Model\Enum\StaffRole;
 
 $staffMember = $staffMemberManager->findById($_GET['id']);
 
@@ -29,7 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
     }
 
     if (empty($errors)) {
-        $updated = new StaffMember($staffMember->getId(), $prenom, $nom, $role, $newPicture);
+        // Convert the role string to a StaffRole enum value
+        $roleEnum = StaffRole::from($role);
+
+        $updated = new StaffMember($staffMember->getId(), $prenom, $nom, $roleEnum, $newPicture);
 
         if ($staffMemberManager->update($updated)) {
             header('Location: staff.php');
@@ -81,10 +85,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
             <label for="role">Rôle</label>
             <select id="role" name="role" required>
                 <option value="" disabled>Sélectionner un rôle</option>
-                <option value="Entraineur" <?php echo ($staffMember->getRole() === 'Entraineur') ? 'selected' : ''; ?>>Entraîneur</option>
-                <option value="Préparateur" <?php echo ($staffMember->getRole() === 'Préparateur') ? 'selected' : ''; ?>>Préparateur</option>
-                <option value="Analyste" <?php echo ($staffMember->getRole() === 'Analyste') ? 'selected' : ''; ?>>Analyste</option>
+                <option value="Entraineur" <?php echo ($staffMember->getRole()?->value === 'Entraineur') ? 'selected' : ''; ?>>Entraîneur</option>
+                <option value="Préparateur" <?php echo ($staffMember->getRole()?->value === 'Préparateur') ? 'selected' : ''; ?>>Préparateur</option>
+                <option value="Analyste" <?php echo ($staffMember->getRole()?->value === 'Analyste') ? 'selected' : ''; ?>>Analyste</option>
             </select>
+            <!-- on rajotue a chaque fois ->value pour l'enumeration -->
 
             <label for="picture">Photo (laisser vide pour conserver l'actuelle)</label>
             <input type="file" id="picture" name="picture" accept="image/*">

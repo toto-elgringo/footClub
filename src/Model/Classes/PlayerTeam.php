@@ -1,12 +1,13 @@
 <?php
 
 namespace Model\Classes;
+use Model\Enum\PlayerRole;
 
 class PlayerTeam
 {
     private int $playerId;
     private int $teamId;
-    private string $role;
+    private PlayerRole $role;
 
     public function __construct($playerId, $teamId, $role)
     {
@@ -23,7 +24,7 @@ class PlayerTeam
     {
         return $this->teamId;
     }
-    public function getRole(): string
+    public function getRole(): PlayerRole
     {
         return $this->role;
     }
@@ -36,7 +37,7 @@ class PlayerTeam
     {
         $this->teamId = $teamId;
     }
-    public function setRole(string $role): void
+    public function setRole(PlayerRole $role): void
     {
         $this->role = $role;
     }

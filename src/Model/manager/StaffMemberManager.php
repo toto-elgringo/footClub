@@ -1,8 +1,9 @@
 <?php
 
-namespace Model\manager;
+namespace Model\Manager;
 
 use Model\Classes\StaffMember;
+use Model\Enum\StaffRole; // pour StaffRole::from()
 use Model\Trait\PdoTrait;
 use Model\Trait\InstanceOfTrait;
 
@@ -21,7 +22,10 @@ class StaffMemberManager implements ManagerInterface
                 $data['id'] ?? null,
                 $data['firstname'],
                 $data['lastname'],
-                $data['role'],
+                // passage de:
+                // $data['role'],
+                // à
+                StaffRole::from($data['role']),
                 $data['picture'] ?? ''
             );
         }
@@ -40,7 +44,7 @@ class StaffMemberManager implements ManagerInterface
                 $data['id'] ?? null,
                 $data['firstname'],
                 $data['lastname'],
-                $data['role'],
+                StaffRole::from($data['role']),
                 $data['picture'] ?? ''
             );
         }
@@ -56,7 +60,7 @@ class StaffMemberManager implements ManagerInterface
         return $stmt->execute([
             "firstname" => $object->getFirstname(),
             "lastname" => $object->getLastname(),
-            "role" => $object->getRole(),
+            "role" => $object->getRole()->value, // ajoute de -> pour accéder à la valeur de l'énumération
             "picture" => $object->getPicture()
         ]);
     }
@@ -77,7 +81,7 @@ class StaffMemberManager implements ManagerInterface
         return $stmt->execute([
             $object->getFirstname(),
             $object->getLastname(),
-            $object->getRole(),
+            $object->getRole()->value,
             $object->getPicture(),
             $object->getId()
         ]);
