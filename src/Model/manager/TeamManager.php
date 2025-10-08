@@ -1,10 +1,10 @@
 <?php
 
-namespace src\Model\manager;
+namespace Model\manager;
 
 use database\Database;
 use PDO;
-use src\Model\Team;
+use Model\Classes\Team;
 
 class TeamManager {
     private PDO $db;

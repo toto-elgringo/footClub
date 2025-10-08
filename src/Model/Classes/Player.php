@@ -1,21 +1,23 @@
 <?php
 
-namespace src\Model;
+namespace Model\Classes;
 
-class StaffMember
+use DateTime;
+
+class Player
 {
     private ?int $id = null;
     private string $firstname;
     private string $lastname;
-    private string $role;
+    private DateTime $birthdate;
     private string $picture;
 
-    public function __construct(?int $id, string $firstname, string $lastname, string $role, string $picture)
+    public function __construct(?int $id, string $firstname, string $lastname, string $birthdate, string $picture)
     {
         $this->id = $id;
         $this->firstname = $firstname;
         $this->lastname = $lastname;
-        $this->role = $role;
+        $this->birthdate = new DateTime($birthdate);
         $this->picture = $picture;
     }
 
@@ -31,19 +33,15 @@ class StaffMember
     {
         return $this->lastname;
     }
-    public function getRole(): string
+    public function getBirthdate(): DateTime
     {
-        return $this->role;
+        return $this->birthdate;
     }
     public function getPicture(): string
     {
         return $this->picture;
     }
 
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
     public function setFirstname(string $firstname): void
     {
         $this->firstname = $firstname;
@@ -52,9 +50,9 @@ class StaffMember
     {
         $this->lastname = $lastname;
     }
-    public function setRole(string $role): void
+    public function setBirthdate(string $birthdate): void
     {
-        $this->role = $role;
+        $this->birthdate = new DateTime($birthdate);
     }
     public function setPicture(string $picture): void
     {

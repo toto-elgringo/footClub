@@ -1,10 +1,10 @@
 <?php
 
-include "includes/navbar.php";
+include "../includes/navbar.php";
 
-use src\Model\Player;
-use src\Model\PlayerTeam;
-use src\function\UploadPicture;
+use Model\Classes\Player;
+use Model\Classes\PlayerTeam;
+use Model\Helper\UploadPicture;
 
 $players = $playerManager->findAll();
 $teams = $teamManager->findAll();
@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 
     $playerToDelete = $playerManager->findById($id);
 
-    if ($playerToDelete instanceof src\Model\Player) { // on vérifie si la variable $playerToDelete est une instance de la classe Player, instanceof est un test de type en PHP orienté objet.
+    if ($playerToDelete instanceof Player) { // on vérifie si la variable $playerToDelete est une instance de la classe Player, instanceof est un test de type en PHP orienté objet.
         if ($playerManager->delete($playerToDelete)) {
             header("Location: joueurs.php");
             exit;
@@ -89,8 +89,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Joueurs</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/joueurs.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/joueurs.css">
 </head>
 
 <body>
@@ -149,7 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
                         </form>
                         <a href="joueursUpdate.php?id=<?php echo $player->getId(); ?>" class="player-card-link">
                             <div class="card-header">
-                                <img src="uploads/<?php echo htmlspecialchars($player->getPicture()); ?>" alt="Photo de <?php echo htmlspecialchars($player->getFirstname() . ' ' . $player->getLastname()); ?>" class="player-image">
+                                <img src="../uploads/<?php echo htmlspecialchars($player->getPicture()); ?>" alt="Photo de <?php echo htmlspecialchars($player->getFirstname() . ' ' . $player->getLastname()); ?>" class="player-image">
                                 <div class="card-header-title">
                                     <h2 id="player-name"><?php echo $player->getFirstname() . " " . $player->getLastname(); ?></h2>
                                     <?php $age = $playerManager->getAge($player); ?>
@@ -219,11 +219,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
                 }
                 ?>
             </div>
-            <?php include "includes/footer.php"; ?>
+            <?php include "../includes/footer.php"; ?>
         </div>
     </main>
-    <script src="js/script.js"></script>
-    <script src="js/joueurs.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/joueurs.js"></script>
 </body>
 
 </html>

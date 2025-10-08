@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/includes/navbar.php';
+require_once __DIR__ . '/../includes/navbar.php';
 
-use src\Model\FootballMatch;
+use Model\Classes\FootballMatch;
 
 $match = $matchManager->findById($_GET['id']);
 
@@ -40,8 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_match'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update joueur</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/joueurs.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/joueurs.css">
 </head>
 
 <body>
@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_match'])) {
                 <button type="submit" class="btn btn-primary">Mettre à jour le match</button>
             </div>
         </form>
-        <?php include "includes/footer.php"; ?>
+        <?php include "../includes/footer.php"; ?>
     </div>
 </body>
 

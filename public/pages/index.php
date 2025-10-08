@@ -1,5 +1,8 @@
 <?php
-include "includes/navbar.php";
+
+// temp du fichier index.php
+
+include "../includes/navbar.php";
 
 $players = $playerManager->findAll();
 $teams = $teamManager->findAll();
@@ -15,8 +18,8 @@ $teams = $teamManager->findAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/index.css">
 </head>
 
 
@@ -113,7 +116,7 @@ $teams = $teamManager->findAll();
                 </div>
 
             </div>
-            <?php include "includes/footer.php"; ?>
+            <?php include "../includes/footer.php"; ?>
         </div>
     </main>
 </body>

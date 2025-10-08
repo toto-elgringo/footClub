@@ -1,7 +1,8 @@
 <?php
-include "includes/navbar.php";
+include "../includes/navbar.php";
 
-use src\Model\Team;
+// Use the Team class with its correct namespace
+use Model\Classes\Team;
 
 $teams = $teamManager->findAll();
 $teamsWithCount = $teamManager->findAllWithPlayerCount();
@@ -13,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 
     $teamToDelete = $teamManager->findById($id);
 
-    if ($teamToDelete instanceof src\Model\Team) {
+    if ($teamToDelete instanceof Model\Classes\Team) {
         if ($teamManager->delete($teamToDelete)) {
             header("Location: equipes.php");
             exit;
@@ -52,8 +53,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Equipes</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/equipes.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/equipes.css">
 </head>
 
 <body>
@@ -117,10 +118,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 <?php } ?>
             </div>
-            <?php include "includes/footer.php"; ?>
+            <?php include "../includes/footer.php"; ?>
         </div>
     </main>
-    <script src="js/script.js"></script>
+    <script src="../js/script.js"></script>
 </body>
 
 </html>

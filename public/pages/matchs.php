@@ -1,8 +1,8 @@
 <?php
-include "includes/navbar.php";
+include "../includes/navbar.php";
 
-use src\Model\OpposingClub;
-use src\Model\FootballMatch;
+use Model\Classes\OpposingClub;
+use Model\Classes\FootballMatch;
 
 $matchs = $matchManager->findAll();
 $opposing_clubs = $opposingClubManager->findAll();
@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 
     $matchToDelete = $matchManager->findById($id);
 
-    if ($matchToDelete instanceof src\Model\FootballMatch) {
+    if ($matchToDelete instanceof FootballMatch) {
         if ($matchManager->delete($matchToDelete)) {
             header("Location: matchs.php");
             exit;
@@ -94,8 +94,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matchs</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/matchs.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/matchs.css">
 </head>
 
 <body>
@@ -288,10 +288,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
 
-            <?php include "includes/footer.php"; ?>
+            <?php include "../includes/footer.php"; ?>
         </div>
     </main>
-    <script src="js/script.js"></script>
+    <script src="../js/script.js"></script>
 </body>
 
 </html>

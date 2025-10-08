@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . '/includes/navbar.php';
+require_once __DIR__ . '/../includes/navbar.php';
 
-use src\Model\Player;
-use src\function\UploadPicture;
+use Model\Classes\Player;
+use Model\Helper\UploadPicture;
 
 $player = $playerManager->findById($_GET['id']);
 
@@ -46,8 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update joueur</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/joueurs.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/joueurs.css">
 </head>
 
 <body>
@@ -85,13 +85,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
             <input type="file" id="picture" name="picture" accept="image/*">
 
             <div class="current-photo">
-                <img src="<?php echo 'uploads/' . htmlspecialchars($player->getPicture()); ?>" alt="Photo actuelle">
+                <img src="<?php echo '../uploads/' . htmlspecialchars($player->getPicture()); ?>" alt="Photo actuelle">
             </div>
 
             <button type="submit" name="update_player" value="1">Enregistrer</button>
             <a href="joueurs.php" class="cancel">Annuler</a>
         </form>
-        <?php include "includes/footer.php"; ?>
+        <?php include "../includes/footer.php"; ?>
     </div>
 </body>
 

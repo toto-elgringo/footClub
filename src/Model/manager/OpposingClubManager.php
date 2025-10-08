@@ -1,10 +1,10 @@
 <?php
 
-namespace src\Model\manager;
+namespace Model\manager;
 
 use database\Database;
 use PDO;
-use src\Model\OpposingClub;
+use Model\Classes\OpposingClub;
 
 class OpposingClubManager
 {

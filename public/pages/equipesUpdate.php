@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/includes/navbar.php';
+require_once __DIR__ . '/../includes/navbar.php';
 
-use src\Model\Team;
+use Model\Classes\Team;
 
 $team = $teamManager->findById($_GET['id']);
 
@@ -32,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_team'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update équipe</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/equipes.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/equipes.css">
 </head>
 
 <body>
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_team'])) {
             <button type="submit" name="update_team" value="1">Enregistrer</button>
             <a href="equipes.php" class="cancel">Annuler</a>
         </form>
-        <?php include "includes/footer.php"; ?>
+        <?php include "../includes/footer.php"; ?>
     </div>
 </body>
 

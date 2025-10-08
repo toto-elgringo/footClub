@@ -71,6 +71,7 @@
 .appartient-equipe {
     display: flex;
     gap: 1rem;
+    margin: 20px 0 5px 0;
 }
 
 .equipe-bubble {

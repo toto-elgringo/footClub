@@ -1,8 +1,8 @@
 <?php
-include "includes/navbar.php";
+include "../includes/navbar.php";
 
-use src\Model\StaffMember;
-use src\function\UploadPicture;
+use Model\Classes\StaffMember;
+use Model\Helper\UploadPicture;
 
 $staffs = $staffMemberManager->findAll();
 
@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 
     $staffMemberToDelete = $staffMemberManager->findById($id);
 
-    if ($staffMemberToDelete instanceof src\Model\StaffMember) {
+    if ($staffMemberToDelete instanceof StaffMember) {
         if ($staffMemberManager->delete($staffMemberToDelete)) {
             header("Location: staff.php");
             exit;
@@ -64,8 +64,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/staff.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/staff.css">
 </head>
 
 <body>
@@ -136,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </form>
                             <a href="staffUpdate.php?id=<?php echo $staff->getId(); ?>" class="staff-card-link">
                                 <div class="staff-card-picture">
-                                    <img src="uploads/<?php echo htmlspecialchars($staff->getPicture()); ?>" alt="<?php echo htmlspecialchars($staff->getFirstname() . ' ' . $staff->getLastname()); ?>">
+                                    <img src="../uploads/<?php echo htmlspecialchars($staff->getPicture()); ?>" alt="<?php echo htmlspecialchars($staff->getFirstname() . ' ' . $staff->getLastname()); ?>">
                                 </div>
                                 
                             <div class="staff-card-body">
@@ -154,10 +154,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <p>Aucun membre du staff n'a été trouvé.</p>
                 <?php endif; ?>
             </div>
-            <?php include "includes/footer.php"; ?>
+            <?php include "../includes/footer.php"; ?>
         </div>
     </main>
-    <script src="js/script.js"></script>
+    <script src="../js/script.js"></script>
 </body>
 
 </html>
