@@ -6,14 +6,17 @@ use database\Database;
 use PDO;
 use Model\Classes\StaffMember;
 
-class StaffMemberManager {
+class StaffMemberManager implements ManagerInterface
+{
     private PDO $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = Database::getConnection();
     }
 
-    public function findAll(): array {
+    public function findAll(): array
+    {
         $stmt = $this->db->query("SELECT * FROM staff_member");
 
         $staffMembers = [];
@@ -31,7 +34,8 @@ class StaffMemberManager {
         return $staffMembers;
     }
 
-    public function findById(int $id): ?StaffMember {
+    public function findById(int $id): ?StaffMember
+    {
         $stmt = $this->db->prepare("SELECT * FROM staff_member WHERE id = :id");
         $stmt->execute(["id" => $id]);
         $data = $stmt->fetch();
@@ -49,7 +53,13 @@ class StaffMemberManager {
         return null;
     }
 
-    public function insert(StaffMember $staffMember): bool {
+    public function insert(object $object): bool
+    {
+        if (!$object instanceof StaffMember) {
+            return false;
+        }
+
+        $staffMember = $object;
         $stmt = $this->db->prepare("INSERT INTO staff_member (firstname, lastname, role, picture) VALUES (:firstname, :lastname, :role, :picture)");
         return $stmt->execute([
             "firstname" => $staffMember->getFirstname(),
@@ -59,12 +69,24 @@ class StaffMemberManager {
         ]);
     }
 
-    public function delete(StaffMember $staffMember): bool {
+    public function delete(object $object): bool
+    {
+        if (!$object instanceof StaffMember) {
+            return false;
+        }
+
+        $staffMember = $object;
         $stmt = $this->db->prepare("DELETE FROM staff_member WHERE id = :id");
         return $stmt->execute(["id" => $staffMember->getId()]);
     }
 
-    public function update(StaffMember $staffMember): bool {
+    public function update(object $object): bool
+    {
+        if (!$object instanceof StaffMember) {
+            return false;
+        }
+
+        $staffMember = $object;
         $stmt = $this->db->prepare("UPDATE staff_member SET firstname = ?, lastname = ?, role = ?, picture = ? WHERE id = ?");
         return $stmt->execute([
             $staffMember->getFirstname(),

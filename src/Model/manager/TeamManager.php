@@ -5,15 +5,19 @@ namespace Model\manager;
 use database\Database;
 use PDO;
 use Model\Classes\Team;
+use Model\Manager\ManagerInterface;
 
-class TeamManager {
+class TeamManager implements ManagerInterface
+{
     private PDO $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = Database::getConnection();
     }
 
-    public function findAll(): array {
+    public function findAll(): array
+    {
         $stmt = $this->db->query("SELECT * FROM team");
         $teams = [];
         while ($data = $stmt->fetch()) {
@@ -22,31 +26,34 @@ class TeamManager {
         return $teams;
     }
 
-    public function findAllTeams(): array {
+    public function findAllTeams(): array
+    {
         $query = "SELECT * FROM team ORDER BY name";
         $stmt = $this->db->query($query);
-    
+
         $teams = [];
         while ($data = $stmt->fetch()) {
             $teams[] = new Team($data['id'], $data['name']);
         }
         return $teams;
     }
-    
-    
-    public function findById(int $id): ?Team {
+
+
+    public function findById(int $id): ?Team
+    {
         $stmt = $this->db->prepare("SELECT * FROM team WHERE id = ?");
         $stmt->execute([$id]);
         $data = $stmt->fetch();
-        
+
         if (!$data) {
             return null;
         }
-        
+
         return new Team($data['id'], $data['name']);
     }
 
-    public function findAllWithPlayerCount(): array {
+    public function findAllWithPlayerCount(): array
+    {
         $query = "
             SELECT t.*, COUNT(DISTINCT pt.player_id) as player_count
             FROM team t
@@ -55,7 +62,7 @@ class TeamManager {
             ORDER BY t.name
         ";
         $stmt = $this->db->query($query);
-        
+
         $playerCount = [];
         while ($data = $stmt->fetch()) {
             $team = new Team($data['id'], $data['name']);
@@ -64,21 +71,39 @@ class TeamManager {
                 'player_count' => (int)$data['player_count']
             ];
         }
-        
+
         return $playerCount;
     }
 
-    public function insert(Team $team): bool {
+    public function insert(object $object): bool
+    {
+        if (!$object instanceof Team) {
+            return false;
+        }
+
+        $team = $object;
         $stmt = $this->db->prepare("INSERT INTO team (name) VALUES (:name)");
         return $stmt->execute(["name" => $team->getName()]);
     }
 
-    public function delete(Team $team): bool {
+    public function delete(object $object): bool
+    {
+        if (!$object instanceof Team) {
+            return false;
+        }
+
+        $team = $object;
         $stmt = $this->db->prepare("DELETE FROM team WHERE id = :id");
         return $stmt->execute(["id" => $team->getId()]);
     }
 
-    public function update(Team $team): bool {
+    public function update(object $object): bool
+    {
+        if (!$object instanceof Team) {
+            return false;
+        }
+
+        $team = $object;
         $stmt = $this->db->prepare("UPDATE team SET name = ? WHERE id = ?");
         return $stmt->execute([
             $team->getName(),

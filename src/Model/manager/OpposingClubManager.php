@@ -5,8 +5,9 @@ namespace Model\manager;
 use database\Database;
 use PDO;
 use Model\Classes\OpposingClub;
+use Model\Manager\ManagerInterface;
 
-class OpposingClubManager
+class OpposingClubManager implements ManagerInterface
 {
     private PDO $db;
 
@@ -69,8 +70,13 @@ class OpposingClubManager
         );
     }
 
-    public function insert(OpposingClub $club): bool
+    public function insert(object $object): bool
     {
+        if (!$object instanceof OpposingClub) {
+            return false;
+        }
+
+        $club = $object;
         $stmt = $this->db->prepare("INSERT INTO opposing_club (city, address) VALUES (?, ?)");
         $result = $stmt->execute([
             $club->getCity(),
@@ -83,5 +89,31 @@ class OpposingClubManager
         }
 
         return false;
+    }
+
+    public function delete(object $object): bool
+    {
+        if (!$object instanceof OpposingClub) {
+            return false;
+        }
+
+        $club = $object;
+        $stmt = $this->db->prepare("DELETE FROM opposing_club WHERE id = ?");
+        return $stmt->execute([$club->getId()]);
+    }
+
+    public function update(object $object): bool
+    {
+        if (!$object instanceof OpposingClub) {
+            return false;
+        }
+
+        $club = $object;
+        $stmt = $this->db->prepare("UPDATE opposing_club SET city = ?, address = ? WHERE id = ?");
+        return $stmt->execute([
+            $club->getCity(),
+            $club->getName(),
+            $club->getId()
+        ]);
     }
 }
