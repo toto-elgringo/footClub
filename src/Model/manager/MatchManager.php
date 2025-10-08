@@ -1,19 +1,22 @@
 <?php
 
-namespace Model\manager;
+namespace Model\Manager;
 
 use database\Database;
 use PDO;
 use Model\Classes\FootballMatch;
 
-class MatchManager {
+class MatchManager implements ManagerInterface
+{
     private PDO $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = Database::getConnection();
     }
 
-    public function findAll(): array {
+    public function findAll(): array
+    {
         $query = "
             SELECT m.*
             FROM `match` m
@@ -39,7 +42,8 @@ class MatchManager {
         return $matches;
     }
 
-    public function findById(int $id): ?FootballMatch {
+    public function findById(int $id): ?FootballMatch
+    {
         $query = "
             SELECT m.*
             FROM `match` m
@@ -66,7 +70,17 @@ class MatchManager {
         return null;
     }
 
-    public function insert(FootballMatch $match): bool {
+    // passage de public function insert(FootballMatch $match): bool
+    // a
+    // public function insert(object $object): bool
+
+    public function insert(object $object): bool
+    {
+        if (!$object instanceof FootballMatch) { // rajout d'une vérification poru voir si on passe bien le bon objet
+            return false;
+        }
+
+        $match = $object;
         $stmt = $this->db->prepare("INSERT INTO `match` (date, city, team_score, opponent_score, team_id, opposing_club_id) VALUES (?, ?, ?, ?, ?, ?)");
         return $stmt->execute([
             $match->getDate()->format("Y-m-d H:i:s"),
@@ -78,12 +92,24 @@ class MatchManager {
         ]);
     }
 
-    public function delete(FootballMatch $match): bool {
+    public function delete(object $object): bool
+    {
+        if (!$object instanceof FootballMatch) {
+            return false;
+        }
+
+        $match = $object;
         $stmt = $this->db->prepare("DELETE FROM `match` WHERE id = :id");
         return $stmt->execute(['id' => $match->getId()]);
     }
 
-    public function update(FootballMatch $match): bool {
+    public function update(object $object): bool
+    {
+        if (!$object instanceof FootballMatch) {
+            return false;
+        }
+        
+        $match = $object;
         $stmt = $this->db->prepare("UPDATE `match` SET date = ?, city = ?, team_score = ?, opponent_score = ?, team_id = ?, opposing_club_id = ? WHERE id = ?");
         return $stmt->execute([
             $match->getDate()->format("Y-m-d H:i:s"),
