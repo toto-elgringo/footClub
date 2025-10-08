@@ -2,19 +2,14 @@
 
 namespace Model\manager;
 
-use database\Database;
-use PDO;
 use Model\Classes\Team;
 use Model\Manager\ManagerInterface;
+use Model\Trait\PdoTrait;
+use Model\Trait\InstanceOfTrait;
 
 class TeamManager implements ManagerInterface
 {
-    private PDO $db;
-
-    public function __construct()
-    {
-        $this->db = Database::getConnection();
-    }
+    use PdoTrait, InstanceOfTrait;
 
     public function findAll(): array
     {
@@ -77,37 +72,28 @@ class TeamManager implements ManagerInterface
 
     public function insert(object $object): bool
     {
-        if (!$object instanceof Team) {
-            return false;
-        }
+        $this->checkInstanceOf($object, Team::class);
 
-        $team = $object;
         $stmt = $this->db->prepare("INSERT INTO team (name) VALUES (:name)");
-        return $stmt->execute(["name" => $team->getName()]);
+        return $stmt->execute(["name" => $object->getName()]);
     }
 
     public function delete(object $object): bool
     {
-        if (!$object instanceof Team) {
-            return false;
-        }
+        $this->checkInstanceOf($object, Team::class);
 
-        $team = $object;
         $stmt = $this->db->prepare("DELETE FROM team WHERE id = :id");
-        return $stmt->execute(["id" => $team->getId()]);
+        return $stmt->execute(["id" => $object->getId()]);
     }
 
     public function update(object $object): bool
     {
-        if (!$object instanceof Team) {
-            return false;
-        }
+        $this->checkInstanceOf($object, Team::class);
 
-        $team = $object;
         $stmt = $this->db->prepare("UPDATE team SET name = ? WHERE id = ?");
         return $stmt->execute([
-            $team->getName(),
-            $team->getId()
+            $object->getName(),
+            $object->getId()
         ]);
     }
 }

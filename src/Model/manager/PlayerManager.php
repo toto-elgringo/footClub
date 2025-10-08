@@ -2,19 +2,14 @@
 
 namespace Model\manager;
 
-use database\Database;
-use PDO;
 use Model\Classes\Player;
 use DateTime;
+use Model\Trait\PdoTrait;
+use Model\Trait\InstanceOfTrait;
 
 class PlayerManager implements ManagerInterface
 {
-    private PDO $db;
-
-    public function __construct()
-    {
-        $this->db = Database::getConnection();
-    }
+    use PdoTrait, InstanceOfTrait;
 
     public function findAll(): array
     {
@@ -61,45 +56,36 @@ class PlayerManager implements ManagerInterface
 
     public function insert(object $object): bool
     {
-        if (!$object instanceof Player) {
-            return false;
-        }
+        $this->checkInstanceOf($object, Player::class);
 
-        $player = $object;
         $stmt = $this->db->prepare("INSERT INTO player (firstname, lastname, birthdate, picture) VALUES (?, ?, ?, ?)");
         return $stmt->execute([
-            $player->getFirstname(),
-            $player->getLastname(),
-            $player->getBirthdate()->format("Y-m-d"),
-            $player->getPicture()
+            $object->getFirstname(),
+            $object->getLastname(),
+            $object->getBirthdate()->format("Y-m-d"),
+            $object->getPicture()
         ]);
     }
 
     public function delete(object $object): bool
     {
-        if (!$object instanceof Player) {
-            return false;
-        }
+        $this->checkInstanceOf($object, Player::class);
 
-        $player = $object;
         $stmt = $this->db->prepare("DELETE FROM player WHERE id = ?");
-        return $stmt->execute([$player->getId()]);
+        return $stmt->execute([$object->getId()]);
     }
 
     public function update(object $object): bool
     {
-        if (!$object instanceof Player) {
-            return false;
-        }
-
-        $player = $object;
+        $this->checkInstanceOf($object, Player::class);
+        
         $stmt = $this->db->prepare("UPDATE player SET firstname = ?, lastname = ?, birthdate = ?, picture = ? WHERE id = ?");
         return $stmt->execute([
-            $player->getFirstname(),
-            $player->getLastname(),
-            $player->getBirthdate()->format("Y-m-d"),
-            $player->getPicture(),
-            $player->getId()
+            $object->getFirstname(),
+            $object->getLastname(),
+            $object->getBirthdate()->format("Y-m-d"),
+            $object->getPicture(),
+            $object->getId()
         ]);
     }
 }

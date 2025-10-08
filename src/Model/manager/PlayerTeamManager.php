@@ -2,19 +2,15 @@
 
 namespace Model\manager;
 
-use database\Database;
-use PDO;
 use Model\Classes\PlayerTeam;
 use Model\Manager\ManagerInterface;
+use Model\Trait\PdoTrait;
+use PDO;
+use Model\Trait\InstanceOfTrait;
 
 class PlayerTeamManager implements ManagerInterface
 {
-    private PDO $db;
-
-    public function __construct()
-    {
-        $this->db = Database::getConnection();
-    }
+    use PdoTrait, InstanceOfTrait;
 
     public function findAll(): array
     {
@@ -73,44 +69,35 @@ class PlayerTeamManager implements ManagerInterface
 
     public function insert(object $object): bool
     {
-        if (!$object instanceof PlayerTeam) {
-            return false;
-        }
+        $this->checkInstanceOf($object, PlayerTeam::class);
 
-        $link = $object;
         $stmt = $this->db->prepare("INSERT INTO player_has_team (player_id, team_id, role) VALUES (?, ?, ?)");
         return $stmt->execute([
-            $link->getPlayerId(),
-            $link->getTeamId(),
-            $link->getRole()
+            $object->getPlayerId(),
+            $object->getTeamId(),
+            $object->getRole()
         ]);
     }
 
     public function delete(object $object): bool
     {
-        if (!$object instanceof PlayerTeam) {
-            return false;
-        }
+        $this->checkInstanceOf($object, PlayerTeam::class);
 
-        $link = $object;
         $stmt = $this->db->prepare("DELETE FROM player_has_team WHERE player_id = ? AND team_id = ?");
-        return $stmt->execute([$link->getPlayerId(), $link->getTeamId()]);
+        return $stmt->execute([$object->getPlayerId(), $object->getTeamId()]);
     }
 
     public function update(object $object): bool
     {
-        if (!$object instanceof PlayerTeam) {
-            return false;
-        }
+        $this->checkInstanceOf($object, PlayerTeam::class);
 
-        $link = $object;
         $stmt = $this->db->prepare("UPDATE player_has_team SET player_id = ?, team_id = ?, role = ? WHERE player_id = ? AND team_id = ?");
         return $stmt->execute([
-            $link->getPlayerId(),
-            $link->getTeamId(),
-            $link->getRole(),
-            $link->getPlayerId(),
-            $link->getTeamId()
+            $object->getPlayerId(),
+            $object->getTeamId(),
+            $object->getRole(),
+            $object->getPlayerId(),
+            $object->getTeamId()
         ]);
     }
 }

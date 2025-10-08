@@ -2,18 +2,13 @@
 
 namespace Model\Manager;
 
-use database\Database;
-use PDO;
 use Model\Classes\FootballMatch;
+use Model\Trait\PdoTrait;
+use Model\Trait\InstanceOfTrait;
 
 class MatchManager implements ManagerInterface
 {
-    private PDO $db;
-
-    public function __construct()
-    {
-        $this->db = Database::getConnection();
-    }
+    use PdoTrait, InstanceOfTrait;
 
     public function findAll(): array
     {
@@ -72,53 +67,47 @@ class MatchManager implements ManagerInterface
 
     // passage de public function insert(FootballMatch $match): bool
     // a
-    // public function insert(object $object): bool
-
     public function insert(object $object): bool
     {
-        if (!$object instanceof FootballMatch) { // rajout d'une vérification poru voir si on passe bien le bon objet
-            return false;
-        }
-
-        $match = $object;
+        // avec le trait, passage de:
+        // if(!$object instanceof FootballMatch) {
+        //     return false;
+        // }
+        // à
+        $this->checkInstanceOf($object, FootballMatch::class); // rajout d'une vérification pour voir si on passe le bon objet en paramètre
+        
         $stmt = $this->db->prepare("INSERT INTO `match` (date, city, team_score, opponent_score, team_id, opposing_club_id) VALUES (?, ?, ?, ?, ?, ?)");
         return $stmt->execute([
-            $match->getDate()->format("Y-m-d H:i:s"),
-            $match->getCity(),
-            $match->getTeamScore(),
-            $match->getOpponentScore(),
-            $match->getTeamId(),
-            $match->getOpposingClubId()
+            $object->getDate()->format("Y-m-d H:i:s"),
+            $object->getCity(),
+            $object->getTeamScore(),
+            $object->getOpponentScore(),
+            $object->getTeamId(),
+            $object->getOpposingClubId()
         ]);
     }
 
     public function delete(object $object): bool
     {
-        if (!$object instanceof FootballMatch) {
-            return false;
-        }
+        $this->checkInstanceOf($object, FootballMatch::class);
 
-        $match = $object;
         $stmt = $this->db->prepare("DELETE FROM `match` WHERE id = :id");
-        return $stmt->execute(['id' => $match->getId()]);
+        return $stmt->execute(['id' => $object->getId()]);
     }
 
     public function update(object $object): bool
     {
-        if (!$object instanceof FootballMatch) {
-            return false;
-        }
+        $this->checkInstanceOf($object, FootballMatch::class); 
         
-        $match = $object;
         $stmt = $this->db->prepare("UPDATE `match` SET date = ?, city = ?, team_score = ?, opponent_score = ?, team_id = ?, opposing_club_id = ? WHERE id = ?");
         return $stmt->execute([
-            $match->getDate()->format("Y-m-d H:i:s"),
-            $match->getCity(),
-            $match->getTeamScore(),
-            $match->getOpponentScore(),
-            $match->getTeamId(),
-            $match->getOpposingClubId(),
-            $match->getId()
+            $object->getDate()->format("Y-m-d H:i:s"),
+            $object->getCity(),
+            $object->getTeamScore(),
+            $object->getOpponentScore(),
+            $object->getTeamId(),
+            $object->getOpposingClubId(),
+            $object->getId()
         ]);
     }
 }

@@ -2,19 +2,14 @@
 
 namespace Model\manager;
 
-use database\Database;
-use PDO;
 use Model\Classes\OpposingClub;
 use Model\Manager\ManagerInterface;
+use Model\Trait\PdoTrait;
+use Model\Trait\InstanceOfTrait;
 
 class OpposingClubManager implements ManagerInterface
 {
-    private PDO $db;
-
-    public function __construct()
-    {
-        $this->db = Database::getConnection();
-    }
+    use PdoTrait, InstanceOfTrait;
 
     public function findAll(): array
     {
@@ -72,19 +67,16 @@ class OpposingClubManager implements ManagerInterface
 
     public function insert(object $object): bool
     {
-        if (!$object instanceof OpposingClub) {
-            return false;
-        }
+        $this->checkInstanceOf($object, OpposingClub::class);
 
-        $club = $object;
         $stmt = $this->db->prepare("INSERT INTO opposing_club (city, address) VALUES (?, ?)");
         $result = $stmt->execute([
-            $club->getCity(),
-            $club->getName()
+            $object->getCity(),
+            $object->getName()
         ]);
 
         if ($result) {
-            $club->setId($this->db->lastInsertId());
+            $object->setId($this->db->lastInsertId());
             return true;
         }
 
@@ -93,27 +85,21 @@ class OpposingClubManager implements ManagerInterface
 
     public function delete(object $object): bool
     {
-        if (!$object instanceof OpposingClub) {
-            return false;
-        }
+        $this->checkInstanceOf($object, OpposingClub::class);
 
-        $club = $object;
         $stmt = $this->db->prepare("DELETE FROM opposing_club WHERE id = ?");
-        return $stmt->execute([$club->getId()]);
+        return $stmt->execute([$object->getId()]);
     }
 
     public function update(object $object): bool
     {
-        if (!$object instanceof OpposingClub) {
-            return false;
-        }
+        $this->checkInstanceOf($object, OpposingClub::class);
 
-        $club = $object;
         $stmt = $this->db->prepare("UPDATE opposing_club SET city = ?, address = ? WHERE id = ?");
         return $stmt->execute([
-            $club->getCity(),
-            $club->getName(),
-            $club->getId()
+            $object->getCity(),
+            $object->getName(),
+            $object->getId()
         ]);
     }
 }
