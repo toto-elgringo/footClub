@@ -2,13 +2,9 @@
 
 namespace Model\Classes;
 
-class StaffMember
+class StaffMember extends Person
 {
-    private ?int $id = null;
-    private string $firstname;
-    private string $lastname;
     private string $role;
-    private string $picture;
 
     public function __construct(?int $id, string $firstname, string $lastname, string $role, string $picture)
     {

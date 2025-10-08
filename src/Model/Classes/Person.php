@@ -2,18 +2,18 @@
 
 namespace Model\Classes;
 
-use DateTime;
-
-class Player extends Person
+abstract class Person
 {
-    private DateTime $birthdate;
+    protected ?int $id = null;
+    protected string $firstname;
+    protected string $lastname;
+    protected string $picture;
 
-    public function __construct(?int $id, string $firstname, string $lastname, string $birthdate, string $picture)
+    public function __construct(?int $id, string $firstname, string $lastname, string $picture)
     {
         $this->id = $id;
         $this->firstname = $firstname;
         $this->lastname = $lastname;
-        $this->birthdate = new DateTime($birthdate);
         $this->picture = $picture;
     }
 
@@ -29,15 +29,15 @@ class Player extends Person
     {
         return $this->lastname;
     }
-    public function getBirthdate(): DateTime
-    {
-        return $this->birthdate;
-    }
     public function getPicture(): string
     {
         return $this->picture;
     }
 
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
     public function setFirstname(string $firstname): void
     {
         $this->firstname = $firstname;
@@ -45,10 +45,6 @@ class Player extends Person
     public function setLastname(string $lastname): void
     {
         $this->lastname = $lastname;
-    }
-    public function setBirthdate(string $birthdate): void
-    {
-        $this->birthdate = new DateTime($birthdate);
     }
     public function setPicture(string $picture): void
     {
