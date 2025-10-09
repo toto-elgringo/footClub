@@ -1,46 +1,44 @@
 <?php
 include "../includes/navbar.php";
 
-// Use the Team class with its correct namespace
 use Model\Classes\Team;
+use Helper\FormValidator;
+use Helper\Redirect;
 
 $teams = $teamManager->findAll();
 $teamsWithCount = $teamManager->findAllWithPlayerCount();
 
-$error = [];
+$validator = new FormValidator();
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete') {
     $id = (int) $_POST['id'];
 
     $teamToDelete = $teamManager->findById($id);
 
-    if ($teamToDelete instanceof Model\Classes\Team) {
+    if ($teamToDelete instanceof Team) {
         if ($teamManager->delete($teamToDelete)) {
-            header("Location: equipes.php");
-            exit;
+            Redirect::to("equipes.php"); // redirige vers equipe.php, economise le exit; et et plus simple
         } else {
-            $error[] = "La suppression a échoué.";
+            $validator->addError("La suppression a échoué."); // ajoute une erreur au tableau error
         }
     } else {
-        $error[] = "Equipe introuvable.";
+        $validator->addError("Équipe introuvable.");
     }
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nom = trim($_POST["nom"]);
+    $validator->required(['nom'], $_POST);
 
+    $nom = trim($_POST["nom"] ?? '');
 
-    if (empty($nom)) {
-        $error[] = "Le nom de l'équipe est obligatoire";
-    }
-
-    if (empty($error)) {
+    if (!$validator->hasErrors()) { // pareil que: if(empty($error)) {}
         $team = new Team(null, $nom);
 
-        $teamManager->insert($team);
-
-        header("Location: equipes.php");
-        exit;
+        if ($teamManager->insert($team)) {
+            Redirect::to("equipes.php");
+        } else {
+            $validator->addError("Une erreur est survenue lors de l'ajout de l'équipe.");
+        }
     }
 }
 
@@ -73,10 +71,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
 
-                <?php if (!empty($error)): ?>
+                <?php if ($validator->hasErrors()): ?>
                     <div class="error">
-                        <?php foreach ($error as $msg): ?>
-                            <p><?php echo htmlspecialchars($msg); ?></p>
+                        <?php foreach ($validator->getErrors() as $err): ?>
+                            <div><?php echo htmlspecialchars($err); ?></div>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>

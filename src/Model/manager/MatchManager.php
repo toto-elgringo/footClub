@@ -2,6 +2,7 @@
 
 namespace Model\Manager;
 
+use DateTime;
 use Model\Classes\FootballMatch;
 use Model\Trait\PdoTrait;
 use Model\Trait\InstanceOfTrait;
@@ -25,7 +26,7 @@ class MatchManager implements ManagerInterface
         while ($data = $stmt->fetch()) {
             $matches[] = new FootballMatch(
                 $data['id'],
-                $data['date'],
+                new DateTime($data['date']),
                 $data['city'],
                 $data['team_score'],
                 $data['opponent_score'],
@@ -53,7 +54,7 @@ class MatchManager implements ManagerInterface
         if ($data) {
             return new FootballMatch(
                 $data['id'],
-                $data['date'],
+                new DateTime($data['date']),
                 $data['city'],
                 $data['team_score'],
                 $data['opponent_score'],

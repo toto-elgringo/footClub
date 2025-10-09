@@ -2,13 +2,15 @@
 require_once __DIR__ . '/../includes/navbar.php';
 
 use Model\Classes\FootballMatch;
+use Helper\FormValidator;
+use Helper\Redirect;
 
 $match = $matchManager->findById($_GET['id']);
 
 $teams = $teamManager->findAll();
 $opposing_clubs = $opposingClubManager->findAll();
 
-$errors = [];
+$validator = new FormValidator();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_match'])) {
     $team_id = trim($_POST['team_id'] ?? '');
@@ -19,15 +21,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_match'])) {
     $opponent_score = trim($_POST['opponent_score'] ?? '');
 
     if ($team_id === '' || $opposing_club_id === '' || $match_date === '' || $city === '' || $team_score === '' || $opponent_score === '') {
-        $errors[] = "Champs requis manquants.";
+        $validator->addError("Champs requis manquants.");
     }
 
-    if (empty($errors)) {
-        $updated = new FootballMatch($match->getId(), $match_date, $city, $team_score, $opponent_score, $team_id, $opposing_club_id);
+    if (empty($validator->getErrors())) {
+        $updated = new FootballMatch($match->getId(), new DateTime($match_date), $city, $team_score, $opponent_score, $team_id, $opposing_club_id);
 
         if ($matchManager->update($updated)) {
-            header('Location: matchs.php');
-            exit;
+            Redirect::to("match.php");
         }
     }
 }
@@ -55,9 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_match'])) {
             </div>
         </div>
 
-        <?php if (!empty($errors)): ?>
+        <?php if ($validator->hasErrors()): ?>
             <div class="error">
-                <?php foreach ($errors as $err): ?>
+                <?php foreach ($validator->getErrors() as $err): ?>
                     <div><?php echo htmlspecialchars($err); ?></div>
                 <?php endforeach; ?>
             </div>
@@ -83,11 +84,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_match'])) {
                 <label for="opposing_club_id">Club adverse</label>
                 <select name="opposing_club_id" id="opposing_club_id" required>
                     <option value="">Sélectionner un club</option>
-                        <?php foreach ($opposing_clubs as $club): ?>
-                            <option value="<?php echo $club->getId(); ?>" <?php echo ($match->getOpposingClubId() == $club->getId()) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($club->getCity()) . ' - ' . htmlspecialchars($club->getName()); ?>
-                            </option>
-                        <?php endforeach; ?>
+                    <?php foreach ($opposing_clubs as $club): ?>
+                        <option value="<?php echo $club->getId(); ?>" <?php echo ($match->getOpposingClubId() == $club->getId()) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($club->getCity()) . ' - ' . htmlspecialchars($club->getName()); ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
 

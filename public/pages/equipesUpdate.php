@@ -2,24 +2,27 @@
 require_once __DIR__ . '/../includes/navbar.php';
 
 use Model\Classes\Team;
+use Helper\FormValidator;
+use Helper\Redirect;
 
 $team = $teamManager->findById($_GET['id']);
 
-$errors = [];
+$validator = new FormValidator();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_team'])) {
     $nom = trim($_POST['nom'] ?? '');
 
+    $validator->required(['nom'], $_POST);
+
     if ($nom === '') {
-        $errors[] = "Champs requis manquants.";
+        $validator->addError("Champs requis manquants.");
     }
 
-    if (empty($errors)) {
+    if (empty($validator->getErrors())) {
         $updated = new Team($team->getId(), $nom);
 
         if ($teamManager->update($updated)) {
-            header('Location: equipes.php');
-            exit;
+            Redirect::to("equipes.php");
         }
     }
 }
@@ -47,9 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_team'])) {
             </div>
         </div>
 
-        <?php if (!empty($errors)): ?>
+        <?php if ($validator->hasErrors()): ?>
             <div class="error">
-                <?php foreach ($errors as $err): ?>
+                <?php foreach ($validator->getErrors() as $err): ?>
                     <div><?php echo htmlspecialchars($err); ?></div>
                 <?php endforeach; ?>
             </div>

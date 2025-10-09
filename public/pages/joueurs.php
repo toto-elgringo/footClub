@@ -6,12 +6,14 @@ use Model\Classes\Player;
 use Model\Classes\PlayerTeam;
 use Helper\UploadPicture;
 use Model\Enum\PlayerRole;
+use Helper\FormValidator;
+use Helper\Redirect;
 
 $players = $playerManager->findAll();
 $teams = $teamManager->findAll();
 $playerTeam = $playerTeamManager->findAll();
 
-$error = [];
+$validator = new FormValidator();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
     $id = (int) $_POST['id'];
@@ -20,13 +22,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 
     if ($playerToDelete instanceof Player) { // on vérifie si la variable $playerToDelete est une instance de la classe Player, instanceof est un test de type en PHP orienté objet.
         if ($playerManager->delete($playerToDelete)) {
-            header("Location: joueurs.php");
-            exit;
+            Redirect::to("joueurs.php");
         } else {
-            $error[] = "La suppression a échoué.";
+            $validator->addError("La suppression a échoué.");
         }
     } else {
-        $error[] = "Joueur introuvable.";
+        $validator->addError("Joueur introuvable.");
     }
 }
 
@@ -40,15 +41,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['player_id'], $_POST['t
     $role = PlayerRole::from($roleStr);
 
     if ($playerTeamManager->exists($player_id, $team_id)) {
-        $error[] = "Le joueur appartient déjà à l'équipe";
+        $validator->addError("Le joueur appartient déjà à l'équipe");
     } else {
         $playerTeam = new PlayerTeam($player_id, $team_id, $role);
 
         if ($playerTeamManager->insert($playerTeam)) {
-            header("Location: joueurs.php");
-            exit;
+            Redirect::to("joueurs.php");
         } else {
-            $error[] = "Une erreur est survenue lors de l'ajout du joueur à l'équipe";
+            $validator->addError("Une erreur est survenue lors de l'ajout du joueur à l'équipe");
         }
     }
 }
@@ -60,27 +60,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
     $picture = $_FILES["picture"] ?? null;
 
     if (empty($nom) || empty($prenom) || empty($birthdate) || !$picture || $picture['error'] !== UPLOAD_ERR_OK) {
-        $error[] = "Tous les champs, y compris l'image, doivent être remplis";
+        $validator->addError("Tous les champs, y compris l'image, doivent être remplis");
     }
 
-    if (empty($error)) {
+    if (!$validator->hasErrors()) {
         $uploadResult = UploadPicture::upload($picture, 'player_');
 
         if ($uploadResult['success']) {
             try {
-                $player = new Player(null, $prenom, $nom, $birthdate, $uploadResult['filename']);
+                // $player = new Player(null, $prenom, $nom, $birthdate, $uploadResult['filename']);
+                $player = new Player(null, $prenom, $nom, new DateTime($birthdate), $uploadResult['filename']);
 
                 if ($playerManager->insert($player)) {
-                    header("Location: joueurs.php");
-                    exit;
+                    Redirect::to("joueurs.php");
                 } else {
-                    $error[] = "Échec de l'insertion du joueur dans la base de données";
+                    $validator->addError("Échec de l'insertion du joueur dans la base de données");
                 }
             } catch (PDOException $e) {
-                $error[] = "Erreur lors de l'ajout du joueur : " . $e->getMessage();
+                $validator->addError("Erreur lors de l'ajout du joueur : " . $e->getMessage());
             }
         } else {
-            $error[] = $uploadResult['error'] ?? "Erreur lors du téléchargement de l'image";
+            $validator->addError($uploadResult['error'] ?? "Erreur lors du téléchargement de l'image");
         }
     }
 }
@@ -112,10 +112,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
                     </div>
                 </div>
 
-                <?php if (!empty($error)): ?>
+                <?php if ($validator->hasErrors()): ?>
                     <div class="error">
-                        <?php foreach ($error as $msg): ?>
-                            <p><?php echo htmlspecialchars($msg); ?></p>
+                        <?php foreach ($validator->getErrors() as $err): ?>
+                            <div><?php echo htmlspecialchars($err); ?></div>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
@@ -182,7 +182,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
                             <div class="appartient-equipe">
                                 <?php foreach ($player_teams as $equipe): ?>
                                     <div class="equipe-bubble">
-                                                                                            <!-- $equipe->role devient: -->
+                                        <!-- $equipe->role devient: -->
                                         <?php echo htmlspecialchars($equipe->team_name . ' - ' . $equipe->role->value); ?>
                                     </div>
                                 <?php endforeach; ?>

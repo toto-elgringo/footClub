@@ -23,7 +23,7 @@ class PlayerManager implements ManagerInterface
                 $row['id'],
                 $row['firstname'],
                 $row['lastname'],
-                $row['birthdate'],
+                new DateTime($row['birthdate']),
                 $row['picture']
             );
         }
@@ -47,7 +47,7 @@ class PlayerManager implements ManagerInterface
                 $row['id'],
                 $row['firstname'],
                 $row['lastname'],
-                $row['birthdate'],
+                new DateTime($row['birthdate']),
                 $row['picture']
             );
         }

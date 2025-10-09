@@ -3,10 +3,12 @@ require_once __DIR__ . '/../includes/navbar.php';
 
 use Model\Classes\Player;
 use Helper\UploadPicture;
+use Helper\FormValidator;
+use Helper\Redirect;
 
 $player = $playerManager->findById($_GET['id']);
 
-$errors = [];
+$validator = new FormValidator();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
     $prenom = trim($_POST['prenom'] ?? '');
@@ -14,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
     $birthdate = trim($_POST['birthdate'] ?? '');
 
     if ($prenom === '' || $nom === '' || $birthdate === '') {
-        $errors[] = "Champs requis manquants.";
+        $validator->addError("Champs requis manquants.");
     }
 
     $newPicture = $player->getPicture();
@@ -22,18 +24,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
     if (isset($_FILES['picture']) && $_FILES['picture']['error'] === UPLOAD_ERR_OK) {
         $upload = UploadPicture::upload($_FILES['picture'], 'player_');
         if (!($upload['success'] ?? false)) {
-            $errors[] = $upload['error'] ?? 'Échec upload';
+            $validator->addError($upload['error'] ?? 'Échec upload');
         } else {
             $newPicture = $upload['filename'];
         }
     }
 
-    if (empty($errors)) {
-        $updated = new Player($player->getId(), $prenom, $nom, $birthdate, $newPicture);
+    if (!$validator->hasErrors()) {
+        $updated = new Player($player->getId(), $prenom, $nom, new DateTime($birthdate), $newPicture);
 
         if ($playerManager->update($updated)) {
-            header('Location: joueurs.php');
-            exit;
+            Redirect::to("joueurs.php");
         }
     }
 }
@@ -61,9 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
             </div>
         </div>
 
-        <?php if (!empty($errors)): ?>
+        <?php if ($validator->hasErrors()): ?>
             <div class="error">
-                <?php foreach ($errors as $err): ?>
+                <?php foreach ($validator->getErrors() as $err): ?>
                     <div><?php echo htmlspecialchars($err); ?></div>
                 <?php endforeach; ?>
             </div>

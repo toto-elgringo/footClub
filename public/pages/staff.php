@@ -4,10 +4,12 @@ include "../includes/navbar.php";
 use Model\Classes\StaffMember;
 use Helper\UploadPicture;
 use Model\Enum\StaffRole;
+use Helper\FormValidator;
+use Helper\Redirect;
 
 $staffs = $staffMemberManager->findAll();
 
-$error = [];
+$validator = new FormValidator();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
     $id = (int) $_POST['id'];
@@ -16,13 +18,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 
     if ($staffMemberToDelete instanceof StaffMember) {
         if ($staffMemberManager->delete($staffMemberToDelete)) {
-            header("Location: staff.php");
-            exit;
+            Redirect::to("staff.php");
         } else {
-            $error[] = "La suppression a échoué.";
+            $validator->addError("La suppression a échoué.");
         }
     } else {
-        $error[] = "Membre du staff introuvable.";
+        $validator->addError("Membre du staff introuvable.");
     }
 }
 
@@ -33,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $role = trim($_POST['role']);
 
     if (empty($first_name) || empty($last_name) || empty($picture['name']) || empty($role)) {
-        $error[] = "Tous les champs doivent être remplis";
+        $validator->addError("Tous les champs doivent être remplis");
     } else {
         $uploadResult = UploadPicture::upload($picture, 'staff_');
 
@@ -43,16 +44,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                                             //$role devient StaffRole::from($role)
 
                 if ($staffMemberManager->insert($staffMember)) {
-                    header("Location: staff.php");
-                    exit;
+                    Redirect::to("staff.php");
                 } else {
-                    $error[] = "Erreur lors de l'ajout du membre dans la base de données";
+                    $validator->addError("Erreur lors de l'ajout du membre dans la base de données");
                 }
             } catch (PDOException $e) {
-                $error[] = $e->getMessage();
+                $validator->addError($e->getMessage());
             }
         } else {
-            $error[] = $uploadResult['error'] ?? "Erreur lors du téléchargement du fichier";
+            $validator->addError($uploadResult['error'] ?? "Erreur lors du téléchargement du fichier");
         }
     }
 }
@@ -86,10 +86,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
 
-                <?php if (!empty($error)): ?>
+                <?php if ($validator->hasErrors()): ?>
                     <div class="error">
-                        <?php foreach ($error as $msg): ?>
-                            <p><?php echo htmlspecialchars($msg); ?></p>
+                        <?php foreach ($validator->getErrors() as $err): ?>
+                            <div><?php echo htmlspecialchars($err); ?></div>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
