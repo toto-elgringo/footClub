@@ -12,11 +12,14 @@ $staffs = $staffMemberManager->findAll();
 $validator = new FormValidator();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
-    $id = (int) $_POST['id'];
+    $id = (int)$_POST['id'];
 
     $staffMemberToDelete = $staffMemberManager->findById($id);
 
     if ($staffMemberToDelete instanceof StaffMember) {
+        // Supprimer l'image associée au membre du staff si elle existe
+        UploadPicture::delete($staffMemberToDelete->getPicture());
+        
         if ($staffMemberManager->delete($staffMemberToDelete)) {
             Redirect::to("staff.php");
         } else {

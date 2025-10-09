@@ -20,7 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 
     $playerToDelete = $playerManager->findById($id);
 
-    if ($playerToDelete instanceof Player) { // on vérifie si la variable $playerToDelete est une instance de la classe Player, instanceof est un test de type en PHP orienté objet.
+    if ($playerToDelete instanceof Player) { // on vérifie si la variable playerToDelete est une instance de la classe Player, instanceof est un teste de type en PHP orienté objet.
+        // Supprimer l'image associée au joueur si elle existe
+        UploadPicture::delete($playerToDelete->getPicture());
+        
         if ($playerManager->delete($playerToDelete)) {
             Redirect::to("joueurs.php");
         } else {

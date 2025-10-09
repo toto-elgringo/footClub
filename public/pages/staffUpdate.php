@@ -22,10 +22,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
 
     $newPicture = $staffMember->getPicture();
 
+    // Si un nouveau fichier est téléchargé
     if (isset($_FILES['picture']) && $_FILES['picture']['error'] === UPLOAD_ERR_OK) {
+        // Supprimer l'ancienne image si elle existe
+        UploadPicture::delete($staffMember->getPicture());
+        // Télécharger la nouvelle image
         $upload = UploadPicture::upload($_FILES['picture'], 'staff_');
         if (!($upload['success'] ?? false)) {
-            $validator->addError($upload['error'] ?? 'Échec upload');
+            $validator->addError($upload['error'] ?? 'Échec de l\'upload de l\'image');
         } else {
             $newPicture = $upload['filename'];
         }

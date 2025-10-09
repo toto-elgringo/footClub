@@ -14,19 +14,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
     $prenom = trim($_POST['prenom'] ?? '');
     $nom = trim($_POST['nom'] ?? '');
     $birthdate = trim($_POST['birthdate'] ?? '');
-
+    
     if ($prenom === '' || $nom === '' || $birthdate === '') {
         $validator->addError("Champs requis manquants.");
     }
 
     $newPicture = $player->getPicture();
 
+    // Si un nouveau fichier est téléchargé
     if (isset($_FILES['picture']) && $_FILES['picture']['error'] === UPLOAD_ERR_OK) {
-        $upload = UploadPicture::upload($_FILES['picture'], 'player_');
-        if (!($upload['success'] ?? false)) {
-            $validator->addError($upload['error'] ?? 'Échec upload');
+        // Supprimer l'ancienne image si elle existe
+        UploadPicture::delete($player->getPicture());
+        // Télécharger la nouvelle image
+        $uploadResult = UploadPicture::upload($_FILES['picture'], 'player_');
+        if ($uploadResult['success']) {
+            $newPicture = $uploadResult['filename'];
         } else {
-            $newPicture = $upload['filename'];
+            $validator->addError($uploadResult['error']);
         }
     }
 
@@ -35,6 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
 
         if ($playerManager->update($updated)) {
             Redirect::to("joueurs.php");
+        } else {
+            $validator->addError("Erreur lors de la mise à jour du joueur.");
         }
     }
 }
