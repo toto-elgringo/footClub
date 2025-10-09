@@ -1,7 +1,5 @@
 <?php
 
-// temp du fichier index.php
-
 include "../includes/navbar.php";
 
 $players = $playerManager->findAll();

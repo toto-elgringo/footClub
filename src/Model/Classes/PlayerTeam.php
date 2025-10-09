@@ -5,19 +5,8 @@ use Model\Enum\PlayerRole;
 
 class PlayerTeam
 {
-    // private int $playerId;
-    // private int $teamId;
-    // private PlayerRole $role;
-
-    // public function __construct($playerId, $teamId, $role)
-    // {
-    //     $this->playerId = $playerId;
-    //     $this->teamId = $teamId;
-    //     $this->role = $role;
-    // }
-
     public function __construct(private int $playerId, private int $teamId, private PlayerRole $role)
-    { // fonction promue
+    {
     }
 
     public function getPlayerId(): int

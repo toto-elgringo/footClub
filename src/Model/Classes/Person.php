@@ -4,18 +4,12 @@ namespace Model\Classes;
 
 abstract class Person
 {
-    protected ?int $id = null;
-    protected string $firstname;
-    protected string $lastname;
-    protected string $picture;
-
-    public function __construct(?int $id, string $firstname, string $lastname, string $picture)
-    {
-        $this->id = $id;
-        $this->firstname = $firstname;
-        $this->lastname = $lastname;
-        $this->picture = $picture;
-    }
+    public function __construct(
+        private ?int $id, 
+        private string $firstname, 
+        private string $lastname,
+        private string $picture
+    ) {}
 
     public function getId(): ?int
     {

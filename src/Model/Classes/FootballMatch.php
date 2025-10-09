@@ -6,24 +6,15 @@ use DateTime;
 
 class FootballMatch
 {
-    private ?int $id;
-    private DateTime $date;
-    private string $city;
-    private int $teamScore;
-    private int $opponentScore;
-    private int $teamId;
-    private int $opposingClubId;
-
-    public function __construct($id, $date, $city, $teamScore, $opponentScore, $teamId, int $opposingClubId)
-    {
-        $this->id = $id;
-        $this->date = new DateTime($date);
-        $this->city = $city;
-        $this->teamScore = $teamScore;
-        $this->opponentScore = $opponentScore;
-        $this->teamId = $teamId;
-        $this->opposingClubId = $opposingClubId;
-    }
+    public function __construct(
+        private ?int $id, 
+        private DateTime $date, 
+        private string $city, 
+        private int $teamScore, 
+        private int $opponentScore, 
+        private int $teamId, 
+        private int $opposingClubId
+    ) {}
 
     public function getId(): ?int
     {
