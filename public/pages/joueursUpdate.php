@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../includes/navbar.php';
 
 use Model\Classes\Player;
-use Model\Helper\UploadPicture;
+use Helper\UploadPicture;
 
 $player = $playerManager->findById($_GET['id']);
 

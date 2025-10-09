@@ -4,7 +4,7 @@ include "../includes/navbar.php";
 
 use Model\Classes\Player;
 use Model\Classes\PlayerTeam;
-use Model\Helper\UploadPicture;
+use Helper\UploadPicture;
 use Model\Enum\PlayerRole;
 
 $players = $playerManager->findAll();

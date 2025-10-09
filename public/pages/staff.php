@@ -2,7 +2,7 @@
 include "../includes/navbar.php";
 
 use Model\Classes\StaffMember;
-use Model\Helper\UploadPicture;
+use Helper\UploadPicture;
 use Model\Enum\StaffRole;
 
 $staffs = $staffMemberManager->findAll();

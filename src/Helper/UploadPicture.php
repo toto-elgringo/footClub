@@ -1,6 +1,6 @@
 <?php
 
-namespace Model\Helper;
+namespace Helper;
 
 class UploadPicture {
     public static function upload(array $file, string $prefix = 'player_'): array {
