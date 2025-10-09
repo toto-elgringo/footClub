@@ -114,13 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
 
-                <?php if ($validator->hasErrors()): ?>
-                    <div class="error">
-                        <?php foreach ($validator->getErrors() as $err): ?>
-                            <div><?php echo htmlspecialchars($err); ?></div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
+                <?php FormValidator::displayErrors($validator); ?>
 
                 <div class="header-toggle-add">
                     <h3>Ajouter un nouveau club adverse</h3>

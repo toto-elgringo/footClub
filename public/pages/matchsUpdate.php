@@ -56,13 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_match'])) {
             </div>
         </div>
 
-        <?php if ($validator->hasErrors()): ?>
-            <div class="error">
-                <?php foreach ($validator->getErrors() as $err): ?>
-                    <div><?php echo htmlspecialchars($err); ?></div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
+        <?php FormValidator::displayErrors($validator); ?>
 
         <form action="matchsUpdate.php?id=<?php echo $match->getId(); ?>" method="post" class="form-grid">
             <input type="hidden" name="update_match" value="1">

@@ -86,13 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
 
-                <?php if (!empty($error)): ?>
-                    <div class="error">
-                        <?php foreach ($error as $msg): ?>
-                            <p><?php echo htmlspecialchars($msg); ?></p>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
+                <?php FormValidator::displayErrors($validator); ?>
 
                 <div class="header-toggle-add">
                     <form action="staff.php" method="post" class="form-container" enctype="multipart/form-data">

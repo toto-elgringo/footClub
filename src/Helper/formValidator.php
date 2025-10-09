@@ -28,4 +28,15 @@ class FormValidator
     {
         $this->errors[] = $message;
     }
+
+    public static function displayErrors(FormValidator $validator): void
+    {
+        if ($validator->hasErrors()) {
+            echo '<div class="error">';
+            foreach ($validator->getErrors() as $err) {
+                echo '<div>' . htmlspecialchars($err) . '</div>';
+            }
+            echo '</div>';
+        }
+    }
 }

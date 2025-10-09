@@ -50,13 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_team'])) {
             </div>
         </div>
 
-        <?php if ($validator->hasErrors()): ?>
-            <div class="error">
-                <?php foreach ($validator->getErrors() as $err): ?>
-                    <div><?php echo htmlspecialchars($err); ?></div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
+        <?php FormValidator::displayErrors($validator); ?>
 
         <form method="post" enctype="multipart/form-data" class="update-form-container">
             <input type="hidden" name="id" value="<?php echo (int)$team->getId(); ?>">
