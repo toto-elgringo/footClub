@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($uploadResult['success']) {
             try {
                 $staffMember = new StaffMember(null, $first_name, $last_name, StaffRole::from($role), $uploadResult['filename']);
-                                                                            //$role devient StaffRole::from($role)
+                //$role devient StaffRole::from($role)
 
                 if ($staffMemberManager->insert($staffMember)) {
                     Redirect::to("staff.php");
@@ -86,10 +86,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
 
-                <?php if ($validator->hasErrors()): ?>
+                <?php if (!empty($error)): ?>
                     <div class="error">
-                        <?php foreach ($validator->getErrors() as $err): ?>
-                            <div><?php echo htmlspecialchars($err); ?></div>
+                        <?php foreach ($error as $msg): ?>
+                            <p><?php echo htmlspecialchars($msg); ?></p>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
@@ -140,14 +140,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <div class="staff-card-picture">
                                     <img src="../uploads/<?php echo htmlspecialchars($staff->getPicture()); ?>" alt="<?php echo htmlspecialchars($staff->getFirstname() . ' ' . $staff->getLastname()); ?>">
                                 </div>
-                                
-                            <div class="staff-card-body">
-                                <h3 class="staff-card-title" id="staff-name"><?php echo htmlspecialchars($staff->getFirstname() . ' ' . $staff->getLastname()); ?></h3>
-                                <div class="staff-card-role">
-                                     <!-- echo htmlspecialchars($staff->getRole() ?: 'Membre du staff'); devient:  -->
-                                    <?php echo htmlspecialchars(($role = $staff->getRole()) ? $role->value : 'Membre du staff'); ?>
-                                </div>
-                                <div>
+
+                                <div class="staff-card-body">
+                                    <h3 class="staff-card-title" id="staff-name"><?php echo htmlspecialchars($staff->getFirstname() . ' ' . $staff->getLastname()); ?></h3>
+                                    <div class="staff-card-role">
+                                        <!-- echo htmlspecialchars($staff->getRole() ?: 'Membre du staff'); devient:  -->
+                                        <?php echo htmlspecialchars(($role = $staff->getRole()) ? $role->value : 'Membre du staff'); ?>
+                                    </div>
+                                    <div>
                                     </div>
                                 </div>
                             </a>

@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 
     if ($matchToDelete instanceof FootballMatch) {
         if ($matchManager->delete($matchToDelete)) {
-            Redirect::to("match.php");
+            Redirect::to("matchs.php");
         } else {
             $validator->addError("La suppression a échoué.");
         }
@@ -71,16 +71,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (empty($validator->getErrors())) {
             try {
-                $match = new FootballMatch(null, $date, $city, $team_score, $opponent_score, $team_id, $opposing_club_id);
+                $dateTime = new DateTime($date);
+                $match = new FootballMatch(null, $dateTime, $city, $team_score, $opponent_score, $team_id, $opposing_club_id);
                 $matchManager->insert($match);
-            } catch (PDOException $e) {
-                $validator->addError("Erreur lors de l'ajout du match : " . $e->getMessage());
+            } catch (Exception $e) {
+                $validator->addError("Erreur lors de la création du match : " . $e->getMessage());
             }
         }
     }
 
     if (empty($validator->getErrors())) {
-        Redirect::to("match.php");
+        Redirect::to("matchs.php");
     }
 }
 
@@ -229,8 +230,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <div class="team-row">
                                             <div class="team">
                                                 <?php
-                                                $team = $teamManager->findById($match->getTeamId());
-                                                $teamName = $team ? htmlspecialchars($team->getName()) : 'Équipe inconnue';
+                                                $teamId = $match->getTeamId();
+                                                $teamName = 'Équipe inconnue';
+                                                if ($teamId !== null) {
+                                                    $team = $teamManager->findById($teamId);
+                                                    if ($team) {
+                                                        $teamName = htmlspecialchars($team->getName());
+                                                    }
+                                                }
                                                 ?>
                                                 <span class="team-name"><?php echo $teamName; ?></span>
                                             </div>

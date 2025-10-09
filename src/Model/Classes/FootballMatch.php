@@ -12,7 +12,7 @@ class FootballMatch
         private string $city, 
         private int $teamScore, 
         private int $opponentScore, 
-        private int $teamId, 
+        private ?int $teamId, 
         private int $opposingClubId
     ) {}
 
@@ -36,7 +36,7 @@ class FootballMatch
     {
         return $this->opponentScore;
     }
-    public function getTeamId(): int
+    public function getTeamId(): ?int
     {
         return $this->teamId;
     }

@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_match'])) {
         $updated = new FootballMatch($match->getId(), new DateTime($match_date), $city, $team_score, $opponent_score, $team_id, $opposing_club_id);
 
         if ($matchManager->update($updated)) {
-            Redirect::to("match.php");
+            Redirect::to("matchs.php");
         }
     }
 }
