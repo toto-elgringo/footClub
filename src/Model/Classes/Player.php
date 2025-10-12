@@ -8,6 +8,8 @@ class Player extends Person
 {
     // private DateTime $birthdate;
 
+    // classe promue
+
     // public function __construct(?int $id, string $firstname, string $lastname, string $birthdate, string $picture)
     // {
     //     $this->id = $id;

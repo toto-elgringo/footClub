@@ -17,7 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
     $staffMemberToDelete = $staffMemberManager->findById($id);
 
     if ($staffMemberToDelete instanceof StaffMember) {
-        // Supprimer l'image associée au membre du staff si elle existe
         UploadPicture::delete($staffMemberToDelete->getPicture());
         
         if ($staffMemberManager->delete($staffMemberToDelete)) {
@@ -44,7 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($uploadResult['success']) {
             try {
                 $staffMember = new StaffMember(null, $first_name, $last_name, StaffRole::from($role), $uploadResult['filename']);
-                //$role devient StaffRole::from($role)
 
                 if ($staffMemberManager->insert($staffMember)) {
                     Redirect::to("staff.php");
@@ -142,7 +140,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <h3 class="staff-card-title" id="staff-name"><?php echo htmlspecialchars($staff->getFirstname() . ' ' . $staff->getLastname()); ?></h3>
                                     <div class="staff-card-role">
                                         <!-- echo htmlspecialchars($staff->getRole() ?: 'Membre du staff'); devient:  -->
-                                        <?php echo htmlspecialchars(($role = $staff->getRole()) ? $role->value : 'Membre du staff'); ?>
+                                        <?php echo htmlspecialchars(($role = $staff->getRole()) ? $role->value : 'Membre du staff'); ?> 
+                                        <!-- getRole retourne un objet donc on doit utiliser $role->value pour obtenir la valeur -->
                                     </div>
                                     <div>
                                     </div>

@@ -21,7 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
     $playerToDelete = $playerManager->findById($id);
 
     if ($playerToDelete instanceof Player) { // on vérifie si la variable playerToDelete est une instance de la classe Player, instanceof est un teste de type en PHP orienté objet.
-        // Supprimer l'image associée au joueur si elle existe
         UploadPicture::delete($playerToDelete->getPicture());
         
         if ($playerManager->delete($playerToDelete)) {
@@ -40,7 +39,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['player_id'], $_POST['t
     $team_id = trim($_POST['team_id']);
     $roleStr = trim($_POST['role']);
 
-    // Convert the role string to a PlayerRole enum value
     $role = PlayerRole::from($roleStr);
 
     if ($playerTeamManager->exists($player_id, $team_id)) {
@@ -71,7 +69,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
 
         if ($uploadResult['success']) {
             try {
-                // $player = new Player(null, $prenom, $nom, $birthdate, $uploadResult['filename']);
                 $player = new Player(null, $prenom, $nom, new DateTime($birthdate), $uploadResult['filename']);
 
                 if ($playerManager->insert($player)) {
@@ -181,6 +178,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
                                     <div class="equipe-bubble">
                                         <!-- $equipe->role devient: -->
                                         <?php echo htmlspecialchars($equipe->team_name . ' - ' . $equipe->role->value); ?>
+                                        <!-- getRole retourne un objet donc on doit utiliser $equipe->role->value pour obtenir la valeur -->
                                     </div>
                                 <?php endforeach; ?>
                             </div>

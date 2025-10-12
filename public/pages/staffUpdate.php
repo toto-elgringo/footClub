@@ -36,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
     }
 
     if (empty($validator->getErrors())) {
-        // Convert the role string to a StaffRole enum value
         $roleEnum = StaffRole::from($role);
 
         $updated = new StaffMember($staffMember->getId(), $prenom, $nom, $roleEnum, $newPicture);
@@ -84,11 +83,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
             <label for="role">Rôle</label>
             <select id="role" name="role" required>
                 <option value="" disabled>Sélectionner un rôle</option>
-                <option value="Entraineur" <?php echo ($staffMember->getRole()?->value === 'Entraineur') ? 'selected' : ''; ?>>Entraîneur</option>
-                <option value="Préparateur" <?php echo ($staffMember->getRole()?->value === 'Préparateur') ? 'selected' : ''; ?>>Préparateur</option>
-                <option value="Analyste" <?php echo ($staffMember->getRole()?->value === 'Analyste') ? 'selected' : ''; ?>>Analyste</option>
+                <option value="Entraineur" <?php echo ($staffMember->getRole() === 'Entraineur') ? 'selected' : ''; ?>>Entraîneur</option>
+                <option value="Préparateur" <?php echo ($staffMember->getRole() === 'Préparateur') ? 'selected' : ''; ?>>Préparateur</option>
+                <option value="Analyste" <?php echo ($staffMember->getRole() === 'Analyste') ? 'selected' : ''; ?>>Analyste</option>
             </select>
-            <!-- on rajotue a chaque fois ->value pour l'enumeration -->
 
             <label for="picture">Photo (laisser vide pour conserver l'actuelle)</label>
             <input type="file" id="picture" name="picture" accept="image/*">

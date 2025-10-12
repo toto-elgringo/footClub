@@ -5,7 +5,7 @@ namespace Helper;
 class UploadPicture {
     private const UPLOAD_DIR = __DIR__ . '/../../public/uploads/';
 
-    public static function upload(array $file, string $prefix = 'player_'): array {
+    public static function upload(array $file, string $prefix): array {
         if (!isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) {
             return ['success' => false, 'error' => 'Fichier invalide ou upload échoué.'];
         }

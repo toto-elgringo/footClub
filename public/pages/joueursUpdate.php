@@ -21,11 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
 
     $newPicture = $player->getPicture();
 
-    // Si un nouveau fichier est téléchargé
     if (isset($_FILES['picture']) && $_FILES['picture']['error'] === UPLOAD_ERR_OK) {
-        // Supprimer l'ancienne image si elle existe
         UploadPicture::delete($player->getPicture());
-        // Télécharger la nouvelle image
         $uploadResult = UploadPicture::upload($_FILES['picture'], 'player_');
         if ($uploadResult['success']) {
             $newPicture = $uploadResult['filename'];

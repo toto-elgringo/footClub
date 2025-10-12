@@ -17,9 +17,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 
     if ($teamToDelete instanceof Team) {
         if ($teamManager->delete($teamToDelete)) {
-            Redirect::to("equipes.php"); // redirige vers equipe.php, economise le exit; et et plus simple
+            Redirect::to("equipes.php");
         } else {
-            $validator->addError("La suppression a échoué."); // ajoute une erreur au tableau error
+            $validator->addError("La suppression a échoué.");
         }
     } else {
         $validator->addError("Équipe introuvable.");

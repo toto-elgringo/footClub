@@ -14,7 +14,7 @@ class FormValidator
         }
     }
 
-    public function hasErrors(): bool // verifie s'il y a des erreur de validation, true si erreur, falso si non
+    public function hasErrors(): bool // verifie s'il y a des erreur de validation, true si erreur, false si non
     {
         return !empty($this->errors);
     }

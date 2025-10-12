@@ -14,10 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_team'])) {
 
     $validator->required(['nom'], $_POST);
 
-    if ($nom === '') {
-        $validator->addError("Champs requis manquants.");
-    }
-
     if (empty($validator->getErrors())) {
         $updated = new Team($team->getId(), $nom);
 

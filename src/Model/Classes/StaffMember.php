@@ -7,17 +7,6 @@ use Model\Enum\StaffRole;
 
 class StaffMember extends Person
 {
-    // private StaffRole $role;
-
-    // public function __construct(?int $id, string $firstname, string $lastname, StaffRole $role, string $picture) 
-    // {
-    //     $this->id = $id;
-    //     $this->firstname = $firstname;
-    //     $this->lastname = $lastname;
-    //     $this->role = $role;
-    //     $this->picture = $picture;
-    // }
-
     public function __construct(
         private ?int $id, 
         private string $firstname, 
