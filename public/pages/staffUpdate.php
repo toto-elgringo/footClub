@@ -1,11 +1,11 @@
 <?php
 require_once __DIR__ . '/../includes/navbar.php';
 
-use Model\Classes\StaffMember;
-use Helper\UploadPicture;
-use Model\Enum\StaffRole;
-use Helper\FormValidator;
-use Helper\Redirect;
+use App\Model\Classes\StaffMember;
+use App\Helper\UploadPicture;
+use App\Model\Enum\StaffRole;
+use App\Helper\FormValidator;
+use App\Helper\Redirect;
 
 $staffMember = $staffMemberManager->findById($_GET['id']);
 

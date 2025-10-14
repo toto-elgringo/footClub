@@ -1,9 +1,9 @@
 <?php
 include "../includes/navbar.php";
 
-use Model\Classes\Team;
-use Helper\FormValidator;
-use Helper\Redirect;
+use App\Model\Classes\Team;
+use App\Helper\FormValidator;
+use App\Helper\Redirect;
 
 $teams = $teamManager->findAll();
 $teamsWithCount = $teamManager->findAllWithPlayerCount();

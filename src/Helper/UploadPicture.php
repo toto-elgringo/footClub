@@ -1,6 +1,6 @@
 <?php
 
-namespace Helper;
+namespace App\Helper;
 
 class UploadPicture {
     private const UPLOAD_DIR = __DIR__ . '/../../public/uploads/';

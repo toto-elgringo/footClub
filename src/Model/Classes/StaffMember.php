@@ -1,8 +1,8 @@
 <?php
 
-namespace Model\Classes;
+namespace App\Model\Classes;
 
-use Model\Enum\StaffRole;
+use App\Model\Enum\StaffRole;
 // utilisation de l'énumération StaffRole
 
 class StaffMember extends Person

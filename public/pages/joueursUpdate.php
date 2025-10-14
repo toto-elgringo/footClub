@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ . '/../includes/navbar.php';
 
-use Model\Classes\Player;
-use Helper\UploadPicture;
-use Helper\FormValidator;
-use Helper\Redirect;
+use App\Model\Classes\Player;
+use App\Helper\UploadPicture;
+use App\Helper\FormValidator;
+use App\Helper\Redirect;
 
 $player = $playerManager->findById($_GET['id']);
 

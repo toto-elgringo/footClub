@@ -1,11 +1,11 @@
 <?php
 
-namespace Model\Manager;
+namespace App\Model\Manager;
 
 use DateTime;
-use Model\Classes\FootballMatch;
-use Model\Trait\PdoTrait;
-use Model\Trait\InstanceOfTrait;
+use App\Model\Classes\FootballMatch;
+use App\Model\Trait\PdoTrait;
+use App\Model\Trait\InstanceOfTrait;
 
 class MatchManager implements ManagerInterface
 {

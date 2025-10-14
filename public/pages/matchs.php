@@ -1,10 +1,10 @@
 <?php
 include "../includes/navbar.php";
 
-use Model\Classes\OpposingClub;
-use Model\Classes\FootballMatch;
-use Helper\FormValidator;
-use Helper\Redirect;
+use App\Model\Classes\OpposingClub;
+use App\Model\Classes\FootballMatch;
+use App\Helper\FormValidator;
+use App\Helper\Redirect;
 
 $matchs = $matchManager->findAll();
 $opposing_clubs = $opposingClubManager->findAll();

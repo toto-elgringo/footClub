@@ -6,3 +6,5 @@ footClub - backup (avant autoload)/
 assets/
 app/
 routes/
+
+vendor/

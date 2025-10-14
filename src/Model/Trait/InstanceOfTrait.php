@@ -1,6 +1,6 @@
 <?php
 
-namespace Model\Trait;
+namespace App\Model\Trait;
 
 trait InstanceOfTrait
 {

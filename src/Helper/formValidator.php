@@ -1,5 +1,5 @@
 <?php
-namespace Helper;
+namespace App\Helper;
 
 class FormValidator
 {

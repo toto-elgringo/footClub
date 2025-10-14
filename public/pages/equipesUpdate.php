@@ -1,9 +1,9 @@
 <?php
 require_once __DIR__ . '/../includes/navbar.php';
 
-use Model\Classes\Team;
-use Helper\FormValidator;
-use Helper\Redirect;
+use App\Model\Classes\Team;
+use App\Helper\FormValidator;
+use App\Helper\Redirect;
 
 $team = $teamManager->findById($_GET['id']);
 

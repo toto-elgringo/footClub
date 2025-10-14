@@ -1,6 +1,6 @@
 <?php
 
-namespace Model\Classes;
+namespace App\Model\Classes;
 
 class OpposingClub
 {    

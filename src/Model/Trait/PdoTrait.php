@@ -1,8 +1,8 @@
 <?php
 
-namespace Model\Trait;
+namespace App\Model\Trait;
 
-use database\Database;
+use App\database\Database;
 use PDO;
 
 trait PdoTrait {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Model\Manager;
+namespace App\Model\Manager;
 
-use Model\Classes\Player;
+use App\Model\Classes\Player;
 use DateTime;
-use Model\Trait\PdoTrait;
-use Model\Trait\InstanceOfTrait;
+use App\Model\Trait\PdoTrait;
+use App\Model\Trait\InstanceOfTrait;
 
 class PlayerManager implements ManagerInterface
 {

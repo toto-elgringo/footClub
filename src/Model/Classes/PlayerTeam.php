@@ -1,7 +1,7 @@
 <?php
 
-namespace Model\Classes;
-use Model\Enum\PlayerRole;
+namespace App\Model\Classes;
+use App\Model\Enum\PlayerRole;
 
 class PlayerTeam
 {

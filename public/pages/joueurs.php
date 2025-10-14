@@ -2,12 +2,12 @@
 
 include "../includes/navbar.php";
 
-use Model\Classes\Player;
-use Model\Classes\PlayerTeam;
-use Helper\UploadPicture;
-use Model\Enum\PlayerRole;
-use Helper\FormValidator;
-use Helper\Redirect;
+use App\Model\Classes\Player;
+use App\Model\Classes\PlayerTeam;
+use App\Helper\UploadPicture;
+use App\Model\Enum\PlayerRole;
+use App\Helper\FormValidator;
+use App\Helper\Redirect;
 
 $players = $playerManager->findAll();
 $teams = $teamManager->findAll();

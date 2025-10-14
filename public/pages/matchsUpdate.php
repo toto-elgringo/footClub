@@ -1,9 +1,9 @@
 <?php
 require_once __DIR__ . '/../includes/navbar.php';
 
-use Model\Classes\FootballMatch;
-use Helper\FormValidator;
-use Helper\Redirect;
+use App\Model\Classes\FootballMatch;
+use App\Helper\FormValidator;
+use App\Helper\Redirect;
 
 $match = $matchManager->findById($_GET['id']);
 

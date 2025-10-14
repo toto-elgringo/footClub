@@ -1,6 +1,6 @@
 <?php
 
-namespace Model\Enum;
+namespace App\Model\Enum;
 
 enum StaffRole: string {
     case Entraineur = "Entraineur";

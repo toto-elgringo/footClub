@@ -1,13 +1,13 @@
 <?php
-require_once __DIR__ . '/../../src/autoloader.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../src/Helper/UploadPicture.php';
 
-$playerManager      = new Model\Manager\PlayerManager();
-$teamManager        = new Model\Manager\TeamManager();
-$playerTeamManager  = new Model\Manager\PlayerTeamManager();
-$opposingClubManager = new Model\Manager\OpposingClubManager();
-$staffMemberManager = new Model\Manager\StaffMemberManager();
-$matchManager       = new Model\Manager\MatchManager();
+$playerManager      = new App\Model\Manager\PlayerManager();
+$teamManager        = new App\Model\Manager\TeamManager();
+$playerTeamManager  = new App\Model\Manager\PlayerTeamManager();
+$opposingClubManager = new App\Model\Manager\OpposingClubManager();
+$staffMemberManager = new App\Model\Manager\StaffMemberManager();
+$matchManager       = new App\Model\Manager\MatchManager();
 ?>
 
 

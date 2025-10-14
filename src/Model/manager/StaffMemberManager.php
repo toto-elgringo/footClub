@@ -1,11 +1,11 @@
 <?php
 
-namespace Model\Manager;
+namespace App\Model\Manager;
 
-use Model\Classes\StaffMember;
-use Model\Enum\StaffRole; // pour StaffRole::from()
-use Model\Trait\PdoTrait;
-use Model\Trait\InstanceOfTrait;
+use App\Model\Classes\StaffMember;
+use App\Model\Enum\StaffRole; // pour StaffRole::from()
+use App\Model\Trait\PdoTrait;
+use App\Model\Trait\InstanceOfTrait;
 
 class StaffMemberManager implements ManagerInterface
 {

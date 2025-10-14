@@ -1,11 +1,11 @@
 <?php
 
-namespace Model\Manager;
+namespace App\Model\Manager;
 
-use Model\Classes\OpposingClub;
-use Model\Manager\ManagerInterface;
-use Model\Trait\PdoTrait;
-use Model\Trait\InstanceOfTrait;
+use App\Model\Classes\OpposingClub;
+use App\Model\Manager\ManagerInterface;
+use App\Model\Trait\PdoTrait;
+use App\Model\Trait\InstanceOfTrait;
 
 class OpposingClubManager implements ManagerInterface
 {

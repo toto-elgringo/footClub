@@ -1,13 +1,13 @@
 <?php
 
-namespace Model\Manager;
+namespace App\Model\Manager;
 
-use Model\Classes\PlayerTeam;
-use Model\Manager\ManagerInterface;
-use Model\Trait\PdoTrait;
+use App\Model\Classes\PlayerTeam;
+use App\Model\Manager\ManagerInterface;
+use App\Model\Trait\PdoTrait;
 use PDO;
-use Model\Trait\InstanceOfTrait;
-use Model\Enum\PlayerRole;
+use App\Model\Trait\InstanceOfTrait;
+use App\Model\Enum\PlayerRole;
 
 class PlayerTeamManager implements ManagerInterface
 {
