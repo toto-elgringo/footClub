@@ -1,20 +1,22 @@
 <?php
-require_once __DIR__ . '/../includes/navbar.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Model\Classes\Player;
 use App\Helper\UploadPicture;
 use App\Helper\FormValidator;
 use App\Helper\Redirect;
+use App\Helper\TwigRenderer;
+use App\Model\Manager\PlayerManager;
 
+$playerManager = new PlayerManager();
 $player = $playerManager->findById($_GET['id']);
-
 $validator = new FormValidator();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
     $prenom = trim($_POST['prenom'] ?? '');
     $nom = trim($_POST['nom'] ?? '');
     $birthdate = trim($_POST['birthdate'] ?? '');
-    
+
     if ($prenom === '' || $nom === '' || $birthdate === '') {
         $validator->addError("Champs requis manquants.");
     }
@@ -41,56 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
         }
     }
 }
-?>
 
-<!DOCTYPE html>
-<html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update joueur</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/joueurs.css">
-</head>
-
-<body>
-    <div class="container update-container">
-        <div class="header">
-            <div class="page-title">
-                <div>
-                    <h1>Update joueur <?php echo htmlspecialchars($player->getFirstname() . ' ' . $player->getLastname()); ?></h1>
-                    <p>Mettez à jour les informations du joueur</p>
-                </div>
-            </div>
-        </div>
-
-        <?php FormValidator::displayErrors($validator); ?>
-
-        <form method="post" enctype="multipart/form-data" class="update-form-container">
-            <input type="hidden" name="id" value="<?php echo (int)$player->getId(); ?>">
-
-            <label for="prenom">Prénom</label>
-            <input type="text" id="prenom" name="prenom" value="<?php echo htmlspecialchars($player->getFirstname()); ?>" required>
-
-            <label for="nom">Nom</label>
-            <input type="text" id="nom" name="nom" value="<?php echo htmlspecialchars($player->getLastname()); ?>" required>
-
-            <label for="birthdate">Date de naissance</label>
-            <input type="date" id="birthdate" name="birthdate" value="<?php echo $player->getBirthdate()->format('Y-m-d'); ?>" required>
-
-            <label for="picture">Photo (laisser vide pour conserver l'actuelle)</label>
-            <input type="file" id="picture" name="picture" accept="image/*">
-
-            <div class="current-photo">
-                <img src="<?php echo '../uploads/' . htmlspecialchars($player->getPicture()); ?>" alt="Photo actuelle">
-            </div>
-
-            <button type="submit" name="update_player" value="1">Enregistrer</button>
-            <a href="joueurs.php" class="cancel">Annuler</a>
-        </form>
-        <?php include "../includes/footer.php"; ?>
-    </div>
-</body>
-
-</html>
+TwigRenderer::display('pages/joueursUpdate.twig', [
+    'player' => $player,
+    'validator' => $validator
+]);

@@ -19,7 +19,7 @@ class FormValidator
         return !empty($this->errors);
     }
 
-    public function getErrors(): array // retourne le tableau complet de serreurs de validation
+    public function getErrors(): array // retourne le tableau complet de erreurs de validation
     {
         return $this->errors;
     }

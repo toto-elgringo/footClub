@@ -1,0 +1,30 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Update équipe - Foot Club{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="../css/equipes.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container update-container">
+        <div class="header">
+            <div class="page-title">
+                <div>
+                    <h1>Update équipe {{ team.getName() }}</h1>
+                    <p>Mettez à jour les informations de l'équipe</p>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="update-form-container">
+            <input type="hidden" name="id" value="{{ team.getId() }}">
+
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" name="nom" value="{{ team.getName() }}" required>
+
+            <button type="submit" name="update_team" value="1">Enregistrer</button>
+            <a href="equipes.php" class="cancel">Annuler</a>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Joueurs - Foot Club{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="../css/joueurs.css">
+{% endblock %}
+
+{% block content %}
+    <div class="header">
+        <div class="page-title">
+            <div>
+                <h1>Joueurs</h1>
+                <p>Gerez les joueurs de votre club</p>
+            </div>
+            <div>
+                <button class="submit-button"> + Ajouter un joueur </button>
+            </div>
+        </div>
+
+        <div class="header-toggle-add">
+            <form action="joueurs.php" method="post" enctype="multipart/form-data">
+                <label for="nom">Nom</label>
+                <input type="text" name="nom" id="nom">
+                <label for="prenom">Prenom</label>
+                <input type="text" name="prenom" id="prenom">
+                <label for="birthdate">Date de naissance</label>
+                <input type="date" name="birthdate" id="birthdate">
+                <label for="picture">Photo</label>
+                <input type="file" name="picture" id="picture">
+                <button type="submit">Ajouter</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="search">
+        <form id="search-form" onsubmit="return false;">
+            <input type="text" name="search" id="search" placeholder="Rechercher un joueur" oninput="filterPlayers()">
+            <button type="button" class="filter-button" id="filter-button">Filtrer</button>
+        </form>
+    </div>
+
+    <div class="dashboard">
+        {% for player in players %}
+            <div class="player-card card" data-type="player" data-id="{{ player.getId() }}">
+
+                <span class="delete">✕</span>
+                <form method="post" action="joueurs.php" class="delete-player-form delete-form" style="display:none;">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="id" value="{{ player.getId() }}">
+                </form>
+
+                <a href="joueursUpdate.php?id={{ player.getId() }}" class="player-card-link">
+                    <div class="card-header">
+                        <img src="../uploads/{{ player.getPicture() }}"
+                             alt="Photo de {{ player.getFirstname() ~ ' ' ~ player.getLastname() }}"
+                             class="player-image">
+                        <div class="card-header-title">
+                            <h2 id="player-name">{{ player.getFirstname() }} {{ player.getLastname() }}</h2>
+                            <p>{{ playerManager.getAge(player) }} ans</p>   
+                        </div>
+                    </div>
+                </a>
+
+                {% set player_teams = [] %}
+                {% for item in playerTeam %}
+                    {% set teamRelation = item.playerTeam %}
+                    {% if teamRelation.getPlayerId() == player.getId() %}
+                        {% for team in teams %}
+                            {% if team.getId() == teamRelation.getTeamId() %}
+                            {#
+                                |merge permet de fusionner les tableaux
+                                cela revient a faire un tableau = tableau + 1
+                                pour a chaque iteration de la boucle rajouter un element
+                            #}
+                                {% set player_teams = player_teams|merge([{ 
+                                    'team_name': team.getName(),
+                                    'role': teamRelation.getRole()
+                                }]) %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if player_teams is not empty %}
+                    <div class="appartient-equipe">
+                        {% for equipe in player_teams %}
+                            <div class="equipe-bubble">
+                                {{ equipe.team_name }} - {{ equipe.role.value }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="ajouter-equipe">
+                    <form action="joueurs.php" method="post">
+                        <input type="hidden" name="player_id" value="{{ player.getId() }}">
+                        <select name="team_id" id="team_{{ player.getId() }}" required>
+                            <option value="">Sélectionner une équipe</option>
+                            {% for team in teams %}
+
+                                {% set isInTeam = false %}
+                                {% for item in playerTeam %}
+                                    {% set data = item.playerTeam %}
+                                    {% if data.getPlayerId() == player.getId() and data.getTeamId() == team.getId() %}
+                                        {% set isInTeam = true %}
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if not isInTeam %}
+                                    <option value="{{ team.getId() }}">{{ team.getName() }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <select name="role" id="role_{{ player.getId() }}" required>
+                            <option value="">Sélectionner un rôle</option>
+                            <option value="Gardien">Gardien</option>
+                            <option value="Défenseur">Défenseur</option>
+                            <option value="Milieu">Milieu</option>
+                            <option value="Attaquant">Attaquant</option>
+                        </select>
+                        <button type="submit" class="submit-button">Ajouter</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="../js/joueurs.js"></script>
+{% endblock %}

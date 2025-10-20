@@ -1,0 +1,59 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Equipes - Foot Club{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="../css/equipes.css">
+{% endblock %}
+
+{% block content %}
+    <div class="header">
+        <div class="page-title">
+            <div>
+                <h1>Equipes</h1>
+                <p>Gerez les equipes de votre club</p>
+            </div>
+            <div>
+                <button class="submit-button"> + Ajouter une equipe </button>
+            </div>
+        </div>
+
+        <div class="header-toggle-add">
+            <form action="equipes.php" method="post"> {#pour le action on continu de #}
+                <label for="nom">Nom</label>          {#faire equipes.php car c'est la ou est le procedural#}
+                <input type="text" name="nom" id="nom">
+                <button type="submit">Ajouter</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        {% for teamData in teamsWithCount %}
+            {% set team = teamData.team %} {# set permet de stocker une variable #}
+            {% set playerCount = teamData.player_count %}
+
+            <div class="equipe-card card" data-type="team" data-id="{{ team.getId() }}"> {# le {{}} permet "d'injecter" une variable dans le code #}
+                <span class="delete">✕</span>
+                <form method="post" action="equipes.php" class="delete-player-form delete-form" style="display:none;">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="id" value="{{ team.getId() }}">
+                </form>
+
+                <a href="equipesUpdate.php?id={{ team.getId() }}" class="player-card-link">
+                    <div class="card-header">
+                        <div class="card-header-title">
+                            <h2>{{ team.getName() }}</h2>
+                        </div>
+                    </div>
+                </a>
+
+                <div class="card-stat">
+                    <div class="nombre-joueurs">
+                        <p>{{ playerCount }}</p>
+                        <p>joueurs</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

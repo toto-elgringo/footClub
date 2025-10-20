@@ -1,0 +1,37 @@
+{#
+    Template de base pour toutes les pages
+#}
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>
+			{% block title %}Foot Club
+			{% endblock %}
+		</title>
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/navbar.css"> {% block stylesheets %}{% endblock %}
+		</head>
+		<body>
+			{% include 'components/navbar.twig' %}
+
+
+			<main>
+				<div class="container">
+
+					{% include 'components/errors.twig' %}
+					
+					{% block content %}
+						{#Contenu principal de la page#}
+					{% endblock %}
+
+					{% include 'components/footer.twig' %}
+				</div>
+			</main>
+
+			<script src="../js/script.js"></script>
+
+			{% block scripts %}{% endblock %}
+		</body>
+	</html>

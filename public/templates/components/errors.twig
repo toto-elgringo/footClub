@@ -1,0 +1,13 @@
+{#
+    Composant d'affichage des erreurs
+#}
+{% if validator and validator.hasErrors() %}
+    <div class="error">
+        {% for error in validator.getErrors() %}
+            <div>{{ error }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+

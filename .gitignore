@@ -8,3 +8,6 @@ app/
 routes/
 
 vendor/
+
+# Cache Twig
+var/cache/twig/

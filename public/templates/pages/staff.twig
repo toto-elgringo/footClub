@@ -1,0 +1,84 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Staff - Foot Club{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="../css/staff.css">
+{% endblock %}
+
+{% block content %}
+    <div class="header">
+        <div class="page-title">
+            <div>
+                <h1>Staff</h1>
+                <p>Gerez les membres de votre club</p>
+            </div>
+            <div>
+                <button class="submit-button"> + Ajouter un membre </button>
+            </div>
+        </div>
+
+        <div class="header-toggle-add">
+            <form action="staff.php" method="post" class="form-container" enctype="multipart/form-data">
+                <h2>Ajouter un membre du staff</h2>
+                <div class="form-grid">
+
+                        <label for="first-name">Prénom</label>
+                        <input type="text" name="first-name" id="first-name" required>
+                        <label for="last-name">Nom</label>
+                        <input type="text" name="last-name" id="last-name" required>
+
+                        <label for="role">Rôle</label>
+                        <select name="role" id="role" required>
+                            <option value="">Sélectionner un rôle</option>
+                            <option value="Entraineur">Entraîneur</option>
+                            <option value="Préparateur">Préparateur</option>
+                            <option value="Analyste">Analyste</option>
+                        </select>
+
+                        <label for="picture">Photo</label>
+                        <input type="file" name="picture" id="picture" required>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Ajouter le membre</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        {% if staffs is not empty %} {# fonction de twig qui permet de vérifier si la variable est vide #}
+            {% for staff in staffs %} {# permet d'avoir une syntaxer claire #}
+                <div class="staff-card card" data-type="staff" data-id="{{ staff.getId() }}">
+
+                    <span class="delete">✕</span>
+                    <form method="post" action="staff.php" class="delete-staff-form delete-form" style="display:none;">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="id" value="{{ staff.getId() }}">
+                    </form>
+
+                    <a href="staffUpdate.php?id={{ staff.getId() }}" class="staff-card-link">
+                        <div class="staff-card-picture">
+                            <img src="../uploads/{{ staff.getPicture() }}"
+                                 alt="{{ staff.getFirstname() ~ ' ' ~ staff.getLastname() }}"> {# les ~ permettent de concaténer comme le point en php #}
+                        </div>
+
+                        <div class="staff-card-body">
+                            <h3 class="staff-card-title" id="staff-name">
+                                {{ staff.getFirstname() }} {{ staff.getLastname() }}
+                            </h3>
+                            <div class="staff-card-role">
+
+                                {% set role = staff.getRole() %}
+                                {{ role ? role.value : 'Membre du staff' }}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Aucun membre du staff n'a été trouvé.</p>
+        {% endif %}
+    </div>
+{% endblock %}

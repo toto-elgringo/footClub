@@ -1,12 +1,19 @@
 <?php
-require_once __DIR__ . '/../includes/navbar.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Model\Classes\FootballMatch;
 use App\Helper\FormValidator;
 use App\Helper\Redirect;
+use App\Helper\TwigRenderer;
+use App\Model\Manager\MatchManager;
+use App\Model\Manager\TeamManager;
+use App\Model\Manager\OpposingClubManager;
+
+$matchManager = new MatchManager();
+$teamManager = new TeamManager();
+$opposingClubManager = new OpposingClubManager();
 
 $match = $matchManager->findById($_GET['id']);
-
 $teams = $teamManager->findAll();
 $opposing_clubs = $opposingClubManager->findAll();
 
@@ -32,89 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_match'])) {
         }
     }
 }
-?>
 
-<!DOCTYPE html>
-<html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update joueur</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/joueurs.css">
-</head>
-
-<body>
-    <div class="container update-container">
-        <div class="header">
-            <div class="page-title">
-                <div>
-                    <h1>Update match</h1>
-                    <p>Mettez à jour les informations du match</p>
-                </div>
-            </div>
-        </div>
-
-        <?php FormValidator::displayErrors($validator); ?>
-
-        <form action="matchsUpdate.php?id=<?php echo $match->getId(); ?>" method="post" class="form-grid">
-            <input type="hidden" name="update_match" value="1">
-            <div class="form-group">
-                <label for="team_id">Équipe</label>
-                <select name="team_id" id="team_id" required>
-                    <option value="">Sélectionner une équipe</option>
-                    <?php if (!empty($teams)): ?>
-                        <?php foreach ($teams as $team): ?>
-                            <option value="<?php echo $team->getId(); ?>" <?php echo ($match->getTeamId() == $team->getId()) ? 'selected' : ''; ?>> <!-- permet de selectionner l'equipe -->
-                                <?php echo htmlspecialchars($team->getName()); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="opposing_club_id">Club adverse</label>
-                <select name="opposing_club_id" id="opposing_club_id" required>
-                    <option value="">Sélectionner un club</option>
-                    <?php foreach ($opposing_clubs as $club): ?>
-                        <option value="<?php echo $club->getId(); ?>" <?php echo ($match->getOpposingClubId() == $club->getId()) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($club->getCity()) . ' - ' . htmlspecialchars($club->getName()); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="match_date">Date du match</label>
-                <input type="datetime-local" name="match_date" id="match_date"
-                    value="<?php echo $match->getDate()->format('Y-m-d\TH:i'); ?>" required> <!-- format 'Y-m-d\TH:i' car sinon ca fonctionne pas -->
-            </div>
-
-            <div class="form-group">
-                <label for="city">Lieu du match</label>
-                <input type="text" name="city" id="city" value="<?php echo htmlspecialchars($match->getCity()); ?>" required>
-            </div>
-
-            <div class="form-group">
-                <label for="team_score">Score de l'équipe</label>
-                <input type="number" name="team_score" id="team_score" min="0" max="20"
-                    value="<?php echo htmlspecialchars($match->getTeamScore()); ?>">
-            </div>
-
-            <div class="form-group">
-                <label for="opponent_score">Score de l'adversaire</label>
-                <input type="number" name="opponent_score" id="opponent_score" min="0" max="20"
-                    value="<?php echo htmlspecialchars($match->getOpponentScore()); ?>">
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Mettre à jour le match</button>
-            </div>
-        </form>
-        <?php include "../includes/footer.php"; ?>
-    </div>
-</body>
-
-</html>
+TwigRenderer::display('pages/matchsUpdate.twig', [
+    'match' => $match,
+    'teams' => $teams,
+    'opposing_clubs' => $opposing_clubs,
+    'validator' => $validator
+]);

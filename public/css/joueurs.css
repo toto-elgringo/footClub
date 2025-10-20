@@ -47,7 +47,7 @@
     padding: 20px;
 }
 
-.player-card .player-card-link:hover { /* mieux pour montrer le lien que sur le header de la carte*/
+.player-card .player-card-link:hover {
     background-color: rgba(0, 0, 0, 0.02);
     border-radius: 10px;
 }

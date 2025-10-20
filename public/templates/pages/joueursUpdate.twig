@@ -1,0 +1,43 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Update joueur - Foot Club{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="../css/joueurs.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container update-container">
+        <div class="header">
+            <div class="page-title">
+                <div>
+                    <h1>Update joueur {{ player.getFirstname() }} {{ player.getLastname() }}</h1>
+                    <p>Mettez à jour les informations du joueur</p>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="update-form-container">
+            <input type="hidden" name="id" value="{{ player.getId() }}">
+
+            <label for="prenom">Prénom</label>
+            <input type="text" id="prenom" name="prenom" value="{{ player.getFirstname() }}" required>
+
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" name="nom" value="{{ player.getLastname() }}" required>
+
+            <label for="birthdate">Date de naissance</label>
+            <input type="date" id="birthdate" name="birthdate" value="{{ player.getBirthdate().format('Y-m-d') }}" required>
+
+            <label for="picture">Photo (laisser vide pour conserver l'actuelle)</label>
+            <input type="file" id="picture" name="picture">
+
+            <div class="current-photo">
+                <img src="../uploads/{{ player.getPicture() }}" alt="Photo actuelle">
+            </div>
+
+            <button type="submit" name="update_player" value="1">Enregistrer</button>
+            <a href="joueurs.php" class="cancel">Annuler</a>
+        </form>
+    </div>
+{% endblock %}

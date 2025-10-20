@@ -1,14 +1,16 @@
 <?php
-require_once __DIR__ . '/../includes/navbar.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Model\Classes\StaffMember;
 use App\Helper\UploadPicture;
 use App\Model\Enum\StaffRole;
 use App\Helper\FormValidator;
 use App\Helper\Redirect;
+use App\Helper\TwigRenderer;
+use App\Model\Manager\StaffMemberManager;
 
+$staffMemberManager = new StaffMemberManager();
 $staffMember = $staffMemberManager->findById($_GET['id']);
-
 $validator = new FormValidator();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
@@ -22,11 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
 
     $newPicture = $staffMember->getPicture();
 
-    // Si un nouveau fichier est téléchargé
     if (isset($_FILES['picture']) && $_FILES['picture']['error'] === UPLOAD_ERR_OK) {
-        // Supprimer l'ancienne image si elle existe
         UploadPicture::delete($staffMember->getPicture());
-        // Télécharger la nouvelle image
         $upload = UploadPicture::upload($_FILES['picture'], 'staff_');
         if (!($upload['success'] ?? false)) {
             $validator->addError($upload['error'] ?? 'Échec de l\'upload de l\'image');
@@ -37,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
 
     if (empty($validator->getErrors())) {
         $roleEnum = StaffRole::from($role);
-
         $updated = new StaffMember($staffMember->getId(), $prenom, $nom, $roleEnum, $newPicture);
 
         if ($staffMemberManager->update($updated)) {
@@ -45,61 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
         }
     }
 }
-?>
 
-<!DOCTYPE html>
-<html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update membre du staff</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/staff.css">
-</head>
-
-<body>
-    <div class="container update-container">
-        <div class="header">
-            <div class="page-title">
-                <div>
-                    <h1>Update membre du staff <?php echo htmlspecialchars($staffMember->getFirstname() . ' ' . $staffMember->getLastname()); ?></h1>
-                    <p>Mettez à jour les informations du membre du staff</p>
-                </div>
-            </div>
-        </div>
-
-        <?php FormValidator::displayErrors($validator); ?>
-
-        <form method="post" enctype="multipart/form-data" class="update-form-container">
-            <input type="hidden" name="id" value="<?php echo (int)$staffMember->getId(); ?>">
-
-            <label for="prenom">Prénom</label>
-            <input type="text" id="prenom" name="prenom" value="<?php echo htmlspecialchars($staffMember->getFirstname()); ?>" required>
-
-            <label for="nom">Nom</label>
-            <input type="text" id="nom" name="nom" value="<?php echo htmlspecialchars($staffMember->getLastname()); ?>" required>
-
-            <label for="role">Rôle</label>
-            <select id="role" name="role" required>
-                <option value="" disabled>Sélectionner un rôle</option>
-                <option value="Entraineur" <?php echo ($staffMember->getRole() === 'Entraineur') ? 'selected' : ''; ?>>Entraîneur</option>
-                <option value="Préparateur" <?php echo ($staffMember->getRole() === 'Préparateur') ? 'selected' : ''; ?>>Préparateur</option>
-                <option value="Analyste" <?php echo ($staffMember->getRole() === 'Analyste') ? 'selected' : ''; ?>>Analyste</option>
-            </select>
-
-            <label for="picture">Photo (laisser vide pour conserver l'actuelle)</label>
-            <input type="file" id="picture" name="picture" accept="image/*">
-
-            <div class="current-photo">
-                <img src="<?php echo '../uploads/' . htmlspecialchars($staffMember->getPicture()); ?>" alt="Photo actuelle">
-            </div>
-
-            <button type="submit" name="update_player" value="1">Enregistrer</button>
-            <a href="staff.php" class="cancel">Annuler</a>
-        </form>
-        <?php include "../includes/footer.php"; ?>
-    </div>
-</body>
-
-</html>
+TwigRenderer::display('pages/staffUpdate.twig', [
+    'staffMember' => $staffMember,
+    'validator' => $validator
+]);

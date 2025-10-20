@@ -1,6 +1,5 @@
 <?php
-
-include "../includes/navbar.php";
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use App\Model\Classes\Player;
 use App\Model\Classes\PlayerTeam;
@@ -8,6 +7,14 @@ use App\Helper\UploadPicture;
 use App\Model\Enum\PlayerRole;
 use App\Helper\FormValidator;
 use App\Helper\Redirect;
+use App\Helper\TwigRenderer;
+use App\Model\Manager\PlayerManager;
+use App\Model\Manager\TeamManager;
+use App\Model\Manager\PlayerTeamManager;
+
+$playerManager = new PlayerManager();
+$teamManager = new TeamManager();
+$playerTeamManager = new PlayerTeamManager();
 
 $players = $playerManager->findAll();
 $teams = $teamManager->findAll();
@@ -17,12 +24,11 @@ $validator = new FormValidator();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
     $id = (int) $_POST['id'];
-
     $playerToDelete = $playerManager->findById($id);
 
-    if ($playerToDelete instanceof Player) { // on vérifie si la variable playerToDelete est une instance de la classe Player, instanceof est un teste de type en PHP orienté objet.
+    if ($playerToDelete instanceof Player) {
         UploadPicture::delete($playerToDelete->getPicture());
-        
+
         if ($playerManager->delete($playerToDelete)) {
             Redirect::to("joueurs.php");
         } else {
@@ -32,7 +38,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
         $validator->addError("Joueur introuvable.");
     }
 }
-
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['player_id'], $_POST['team_id'], $_POST['role'])) {
     $player_id = trim($_POST['player_id']);
@@ -85,145 +90,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
     }
 }
 
-?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joueurs</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/joueurs.css">
-</head>
-
-<body>
-    <main>
-        <div class="container">
-
-            <div class="header">
-                <div class="page-title">
-                    <div>
-                        <h1>Joueurs</h1>
-                        <p>Gerez les joueurs de votre club</p>
-                    </div>
-                    <div>
-                        <button class="submit-button"> + Ajouter un joueur </button>
-                    </div>
-                </div>
-
-                <?php FormValidator::displayErrors($validator); ?>
-
-                <div class="header-toggle-add">
-                    <form action="joueurs.php" method="post" enctype="multipart/form-data">
-                        <label for="nom">Nom</label>
-                        <input type="text" name="nom" id="nom">
-                        <label for="prenom">Prenom</label>
-                        <input type="text" name="prenom" id="prenom">
-                        <label for="birthdate">Date de naissance</label>
-                        <input type="date" name="birthdate" id="birthdate">
-                        <label for="picture">Photo</label>
-                        <input type="file" name="picture" id="picture">
-                        <button type="submit">Ajouter</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="search">
-                <form id="search-form" onsubmit="return false;"> <!-- onsubmit="return false;" empêche le rechargement de la page -->
-                    <input type="text" name="search" id="search" placeholder="Rechercher un joueur" oninput="filterPlayers()">
-                    <button type="button" class="filter-button" id="filter-button">Filtrer</button>
-                </form>
-            </div>
-
-            <div class="dashboard">
-
-                <?php foreach ($players as $player) { ?>
-                    <div class="player-card card" data-type="player" data-id="<?php echo $player->getId(); ?>">
-                        <span class="delete">✕</span>
-                        <form method="post" action="joueurs.php" class="delete-player-form delete-form" style="display:none;">
-                            <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="id" value="<?php echo $player->getId(); ?>">
-                        </form>
-                        <a href="joueursUpdate.php?id=<?php echo $player->getId(); ?>" class="player-card-link">
-                            <div class="card-header">
-                                <img src="../uploads/<?php echo htmlspecialchars($player->getPicture()); ?>" alt="Photo de <?php echo htmlspecialchars($player->getFirstname() . ' ' . $player->getLastname()); ?>" class="player-image">
-                                <div class="card-header-title">
-                                    <h2 id="player-name"><?php echo $player->getFirstname() . " " . $player->getLastname(); ?></h2>
-                                    <?php $age = $playerManager->getAge($player); ?>
-                                    <p><?php echo $age; ?> ans</p>
-                                </div>
-                            </div>
-                        </a>
-                        <?php
-                        // filtre les équipes qui appartiennent au joueur actuel
-                        $player_teams = [];
-                        foreach ($playerTeam as $item) {
-                            $teamRelation = $item['playerTeam'];
-                            if ($teamRelation->getPlayerId() == $player->getId()) {
-                                $team = $teamManager->findById($teamRelation->getTeamId());
-                                if ($team) {
-                                    $player_teams[] = (object)[
-                                        'team_name' => $team->getName(),
-                                        'role' => $teamRelation->getRole()
-                                    ];
-                                }
-                            }
-                        }
-
-                        // affiche les équipes seulement s'il y en a
-                        if (!empty($player_teams)): ?>
-                            <div class="appartient-equipe">
-                                <?php foreach ($player_teams as $equipe): ?>
-                                    <div class="equipe-bubble">
-                                        <!-- $equipe->role devient: -->
-                                        <?php echo htmlspecialchars($equipe->team_name . ' - ' . $equipe->role->value); ?>
-                                        <!-- getRole retourne un objet donc on doit utiliser $equipe->role->value pour obtenir la valeur -->
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
-
-                        </a>
-                        <div class="ajouter-equipe">
-                            <form action="joueurs.php" method="post">
-                                <input type="hidden" name="player_id" value="<?php echo $player->getId(); ?>">
-                                <select name="team_id" id="team_<?php echo $player->getId(); ?>" required>
-                                    <option value="">Sélectionner une équipe</option>
-                                    <?php foreach ($teams as $team) { // évite d'afficher les équipes auxquelles le joueur appartient déjà, ce qui empêche de l'ajouter plusieurs fois à la même équipe
-                                        $isInTeam = false;
-                                        foreach ($playerTeam as $item) {
-                                            $data = $item['playerTeam'];
-                                            if ($data->getPlayerId() == $player->getId() && $data->getTeamId() == $team->getId()) {
-                                                $isInTeam = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!$isInTeam) { ?>
-                                            <option value="<?php echo $team->getId(); ?>"><?php echo htmlspecialchars($team->getName()); ?></option>
-                                        <?php } ?>
-                                    <?php } ?>
-                                </select>
-                                <select name="role" id="role_<?php echo $player->getId(); ?>" required>
-                                    <option value="">Sélectionner un rôle</option>
-                                    <option value="Gardien">Gardien</option>
-                                    <option value="Défenseur">Défenseur</option>
-                                    <option value="Milieu">Milieu</option>
-                                    <option value="Attaquant">Attaquant</option>
-                                </select>
-                                <button type="submit" class="submit-button">Ajouter</button>
-                            </form>
-                        </div>
-                    </div>
-                <?php
-                }
-                ?>
-            </div>
-            <?php include "../includes/footer.php"; ?>
-        </div>
-    </main>
-    <script src="../js/script.js"></script>
-    <script src="../js/joueurs.js"></script>
-</body>
-
-</html>
+TwigRenderer::display('pages/joueurs.twig', [
+    'players' => $players,
+    'teams' => $teams,
+    'playerTeam' => $playerTeam,
+    'playerManager' => $playerManager,
+    'validator' => $validator
+]);

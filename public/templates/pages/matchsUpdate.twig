@@ -1,0 +1,77 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Update match - Foot Club{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="../css/joueurs.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container update-container">
+        <div class="header">
+            <div class="page-title">
+                <div>
+                    <h1>Update match</h1>
+                    <p>Mettez à jour les informations du match</p>
+                </div>
+            </div>
+        </div>
+
+        <form action="matchsUpdate.php?id={{ match.getId() }}" method="post" class="form-grid">
+            <input type="hidden" name="update_match" value="1">
+
+            <div class="form-group">
+                <label for="team_id">Équipe</label>
+                <select name="team_id" id="team_id" required>
+                    <option value="">Sélectionner une équipe</option>
+                    {% if teams is not empty %}
+                        {% for team in teams %}
+                            <option value="{{ team.getId() }}" {% if match.getTeamId() == team.getId() %}selected{% endif %}>
+                                {{ team.getName() }}
+                            </option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="opposing_club_id">Club adverse</label>
+                <select name="opposing_club_id" id="opposing_club_id" required>
+                    <option value="">Sélectionner un club</option>
+                    {% for club in opposing_clubs %}
+                        <option value="{{ club.getId() }}" {% if match.getOpposingClubId() == club.getId() %}selected{% endif %}>
+                            {{ club.getCity() }} - {{ club.getName() }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="match_date">Date du match</label>
+                <input type="datetime-local" name="match_date" id="match_date"
+                       value="{{ match.getDate().format('Y-m-d\\TH:i') }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="city">Lieu du match</label>
+                <input type="text" name="city" id="city" value="{{ match.getCity() }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="team_score">Score de l'équipe</label>
+                <input type="number" name="team_score" id="team_score" min="0" max="20"
+                       value="{{ match.getTeamScore() }}">
+            </div>
+
+            <div class="form-group">
+                <label for="opponent_score">Score de l'adversaire</label>
+                <input type="number" name="opponent_score" id="opponent_score" min="0" max="20"
+                       value="{{ match.getOpponentScore() }}">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Mettre à jour le match</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
