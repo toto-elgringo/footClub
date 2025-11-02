@@ -13,7 +13,6 @@ class Database {
     private static string $pass = "";
     private static string $dbname = "foot_club";
 
-    private function __construct() {}
 
     public static function getConnection(): PDO {
         if (self::$pdo === null) {

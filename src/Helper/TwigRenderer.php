@@ -5,13 +5,10 @@ namespace App\Helper;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-/**
- * configure et gère le moteur de template Twig pour l'application.
- * permet de rendre des templates Twig avec des données dynamiques.
- */
 class TwigRenderer
 {
-    private static ?Environment $twig = null;
+    private static ?Environment $twig = null; // stocke une instance unique de Twig
+    // Environement est la classe de Twig, c'est la calsse centrale, c'est le "moteur qui fait fonctionner tout le système de templates
 
     /**
      * Initialise et retourne l'instance Twig
