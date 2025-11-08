@@ -6,19 +6,6 @@ use DateTime;
 
 class Player extends Person
 {
-    // private DateTime $birthdate;
-
-    // classe promue
-
-    // public function __construct(?int $id, string $firstname, string $lastname, string $birthdate, string $picture)
-    // {
-    //     $this->id = $id;
-    //     $this->firstname = $firstname;
-    //     $this->lastname = $lastname;
-    //     $this->birthdate = new DateTime($birthdate);
-    //     $this->picture = $picture;
-    // }
-
     public function __construct(
         private ?int $id, 
         private string $firstname, 

@@ -1,13 +1,16 @@
 <?php
 
 namespace App\Model\Classes;
+
 use App\Model\Enum\PlayerRole;
 
 class PlayerTeam
 {
-    public function __construct(private int $playerId, private int $teamId, private PlayerRole $role)
-    {
-    }
+    public function __construct(
+        private int $playerId,
+        private int $teamId,
+        private PlayerRole $role
+    ) {}
 
     public function getPlayerId(): int
     {
