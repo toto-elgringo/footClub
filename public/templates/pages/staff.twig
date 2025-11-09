@@ -50,15 +50,16 @@
     <div class="dashboard">
         {% if staffs is not empty %} {# fonction de twig qui permet de vérifier si la variable est vide #}
             {% for staff in staffs %} {# permet d'avoir une syntaxer claire #}
-                <div class="staff-card card" data-type="staff" data-id="{{ staff.getId() }}">
+                <div class="staff-card card" data-type="staff" data-firstname="{{ staff.getFirstname() }}" data-lastname="{{ staff.getLastname() }}">
 
                     <span class="delete">✕</span>
                     <form method="post" action="staff.php" class="delete-staff-form delete-form" style="display:none;">
                         <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="id" value="{{ staff.getId() }}">
+                        <input type="hidden" name="firstname" value="{{ staff.getFirstname() }}">
+                        <input type="hidden" name="lastname" value="{{ staff.getLastname() }}">
                     </form>
 
-                    <a href="staffUpdate.php?id={{ staff.getId() }}" class="staff-card-link">
+                    <a href="staffUpdate.php?firstname={{ staff.getFirstname() }}&lastname={{ staff.getLastname() }}" class="staff-card-link">
                         <div class="staff-card-picture">
                             <img src="../uploads/{{ staff.getPicture() }}"
                                  alt="{{ staff.getFirstname() ~ ' ' ~ staff.getLastname() }}"> {# les ~ permettent de concaténer comme le point en php #}

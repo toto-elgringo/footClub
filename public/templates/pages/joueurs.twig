@@ -42,15 +42,16 @@
 
     <div class="dashboard">
         {% for player in players %}
-            <div class="player-card card" data-type="player" data-id="{{ player.getId() }}">
+            <div class="player-card card" data-type="player" data-firstname="{{ player.getFirstname() }}" data-lastname="{{ player.getLastname() }}">
 
                 <span class="delete">✕</span>
                 <form method="post" action="joueurs.php" class="delete-player-form delete-form" style="display:none;">
                     <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="id" value="{{ player.getId() }}">
+                    <input type="hidden" name="firstname" value="{{ player.getFirstname() }}">
+                    <input type="hidden" name="lastname" value="{{ player.getLastname() }}">
                 </form>
 
-                <a href="joueursUpdate.php?id={{ player.getId() }}" class="player-card-link">
+                <a href="joueursUpdate.php?firstname={{ player.getFirstname() }}&lastname={{ player.getLastname() }}" class="player-card-link">
                     <div class="card-header">
                         <img src="../uploads/{{ player.getPicture() }}"
                              alt="Photo de {{ player.getFirstname() ~ ' ' ~ player.getLastname() }}"
@@ -65,20 +66,16 @@
                 {% set player_teams = [] %}
                 {% for item in playerTeam %}
                     {% set teamRelation = item.playerTeam %}
-                    {% if teamRelation.getPlayerId() == player.getId() %}
-                        {% for team in teams %}
-                            {% if team.getId() == teamRelation.getTeamId() %}
-                            {#
-                                |merge permet de fusionner les tableaux
-                                cela revient a faire un tableau = tableau + 1
-                                pour a chaque iteration de la boucle rajouter un element
-                            #}
-                                {% set player_teams = player_teams|merge([{ 
-                                    'team_name': team.getName(),
-                                    'role': teamRelation.getRole()
-                                }]) %}
-                            {% endif %}
-                        {% endfor %}
+                    {% if teamRelation.getPlayer().getFirstname() == player.getFirstname() and teamRelation.getPlayer().getLastname() == player.getLastname() %}
+                        {#
+                            |merge permet de fusionner les tableaux
+                            cela revient a faire un tableau = tableau + 1
+                            pour a chaque iteration de la boucle rajouter un element
+                        #}
+                        {% set player_teams = player_teams|merge([{
+                            'team_name': teamRelation.getTeam().getName(),
+                            'role': teamRelation.getRole()
+                        }]) %}
                     {% endif %}
                 {% endfor %}
 
@@ -94,25 +91,26 @@
 
                 <div class="ajouter-equipe">
                     <form action="joueurs.php" method="post">
-                        <input type="hidden" name="player_id" value="{{ player.getId() }}">
-                        <select name="team_id" id="team_{{ player.getId() }}" required>
+                        <input type="hidden" name="player_firstname" value="{{ player.getFirstname() }}">
+                        <input type="hidden" name="player_lastname" value="{{ player.getLastname() }}">
+                        <select name="team_name" id="team_{{ player.getFirstname() }}_{{ player.getLastname() }}" required>
                             <option value="">Sélectionner une équipe</option>
                             {% for team in teams %}
 
                                 {% set isInTeam = false %}
                                 {% for item in playerTeam %}
                                     {% set data = item.playerTeam %}
-                                    {% if data.getPlayerId() == player.getId() and data.getTeamId() == team.getId() %}
+                                    {% if data.getPlayer().getFirstname() == player.getFirstname() and data.getPlayer().getLastname() == player.getLastname() and data.getTeam().getName() == team.getName() %}
                                         {% set isInTeam = true %}
                                     {% endif %}
                                 {% endfor %}
 
                                 {% if not isInTeam %}
-                                    <option value="{{ team.getId() }}">{{ team.getName() }}</option>
+                                    <option value="{{ team.getName() }}">{{ team.getName() }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
-                        <select name="role" id="role_{{ player.getId() }}" required>
+                        <select name="role" id="role_{{ player.getFirstname() }}_{{ player.getLastname() }}" required>
                             <option value="">Sélectionner un rôle</option>
                             <option value="Gardien">Gardien</option>
                             <option value="Défenseur">Défenseur</option>

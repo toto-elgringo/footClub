@@ -22,9 +22,10 @@ $playerTeam = $playerTeamManager->findAll();
 
 $validator = new FormValidator();
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
-    $id = (int) $_POST['id'];
-    $playerToDelete = $playerManager->findById($id);
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['firstname'], $_POST['lastname'])) {
+    $firstname = trim($_POST['firstname']);
+    $lastname = trim($_POST['lastname']);
+    $playerToDelete = $playerManager->findByName($firstname, $lastname);
 
     if ($playerToDelete instanceof Player) {
         UploadPicture::delete($playerToDelete->getPicture());
@@ -39,22 +40,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
     }
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['player_id'], $_POST['team_id'], $_POST['role'])) {
-    $player_id = trim($_POST['player_id']);
-    $team_id = trim($_POST['team_id']);
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['player_firstname'], $_POST['player_lastname'], $_POST['team_name'], $_POST['role'])) {
+    $player_firstname = trim($_POST['player_firstname']);
+    $player_lastname = trim($_POST['player_lastname']);
+    $team_name = trim($_POST['team_name']);
     $roleStr = trim($_POST['role']);
 
     $role = PlayerRole::from($roleStr);
 
-    if ($playerTeamManager->exists($player_id, $team_id)) {
+    if ($playerTeamManager->exists($player_firstname, $player_lastname, $team_name)) {
         $validator->addError("Le joueur appartient déjà à l'équipe");
     } else {
-        $playerTeam = new PlayerTeam($player_id, $team_id, $role);
+        $player = $playerManager->findByName($player_firstname, $player_lastname);
+        $team = $teamManager->findByName($team_name);
 
-        if ($playerTeamManager->insert($playerTeam)) {
-            Redirect::to("joueurs.php");
+        if ($player && $team) {
+            $playerTeam = new PlayerTeam($player, $team, $role);
+
+            if ($playerTeamManager->insert($playerTeam)) {
+                Redirect::to("joueurs.php");
+            } else {
+                $validator->addError("Une erreur est survenue lors de l'ajout du joueur à l'équipe");
+            }
         } else {
-            $validator->addError("Une erreur est survenue lors de l'ajout du joueur à l'équipe");
+            $validator->addError("Joueur ou équipe introuvable");
         }
     }
 }
@@ -74,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['prenom'
 
         if ($uploadResult['success']) {
             try {
-                $player = new Player(null, $prenom, $nom, new DateTime($birthdate), $uploadResult['filename']);
+                $player = new Player($prenom, $nom, new DateTime($birthdate), $uploadResult['filename']);
 
                 if ($playerManager->insert($player)) {
                     Redirect::to("joueurs.php");

@@ -13,9 +13,10 @@ $staffMemberManager = new StaffMemberManager();
 $staffs = $staffMemberManager->findAll();
 $validator = new FormValidator();
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
-    $id = (int)$_POST['id'];
-    $staffMemberToDelete = $staffMemberManager->findById($id);
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['firstname'], $_POST['lastname'])) {
+    $firstname = trim($_POST['firstname']);
+    $lastname = trim($_POST['lastname']);
+    $staffMemberToDelete = $staffMemberManager->findByName($firstname, $lastname);
 
     if ($staffMemberToDelete instanceof StaffMember) {
         UploadPicture::delete($staffMemberToDelete->getPicture());
@@ -43,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['action'])) {
 
         if ($uploadResult['success']) {
             try {
-                $staffMember = new StaffMember(null, $first_name, $last_name, StaffRole::from($role), $uploadResult['filename']);
+                $staffMember = new StaffMember($first_name, $last_name, StaffRole::from($role), $uploadResult['filename']);
 
                 if ($staffMemberManager->insert($staffMember)) {
                     Redirect::to("staff.php");

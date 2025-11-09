@@ -10,10 +10,14 @@ use App\Helper\TwigRenderer;
 use App\Model\Manager\StaffMemberManager;
 
 $staffMemberManager = new StaffMemberManager();
-$staffMember = $staffMemberManager->findById($_GET['id']);
+$staffMember = isset($_GET['firstname'], $_GET['lastname'])
+    ? $staffMemberManager->findByName($_GET['firstname'], $_GET['lastname'])
+    : null;
 $validator = new FormValidator();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
+    $old_firstname = trim($_POST['old_firstname'] ?? '');
+    $old_lastname = trim($_POST['old_lastname'] ?? '');
     $prenom = trim($_POST['prenom'] ?? '');
     $nom = trim($_POST['nom'] ?? '');
     $role = trim($_POST['role'] ?? '');
@@ -36,10 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
 
     if (empty($validator->getErrors())) {
         $roleEnum = StaffRole::from($role);
-        $updated = new StaffMember($staffMember->getId(), $prenom, $nom, $roleEnum, $newPicture);
-
-        if ($staffMemberManager->update($updated)) {
+        $updated = new StaffMember($prenom, $nom, $roleEnum, $newPicture);
+        if ($staffMemberManager->update($updated, $old_firstname, $old_lastname)) {
             Redirect::to("staff.php");
+        } else {
+            $validator->addError("Erreur lors de la mise à jour du membre du staff.");
         }
     }
 }

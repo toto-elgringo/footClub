@@ -9,10 +9,14 @@ use App\Helper\TwigRenderer;
 use App\Model\Manager\PlayerManager;
 
 $playerManager = new PlayerManager();
-$player = $playerManager->findById($_GET['id']);
+$player = isset($_GET['firstname'], $_GET['lastname'])
+    ? $playerManager->findByName($_GET['firstname'], $_GET['lastname'])
+    : null;
 $validator = new FormValidator();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
+    $old_firstname = trim($_POST['old_firstname'] ?? '');
+    $old_lastname = trim($_POST['old_lastname'] ?? '');
     $prenom = trim($_POST['prenom'] ?? '');
     $nom = trim($_POST['nom'] ?? '');
     $birthdate = trim($_POST['birthdate'] ?? '');
@@ -34,9 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_player'])) {
     }
 
     if (!$validator->hasErrors()) {
-        $updated = new Player($player->getId(), $prenom, $nom, new DateTime($birthdate), $newPicture);
-
-        if ($playerManager->update($updated)) {
+        $updated = new Player($prenom, $nom, new DateTime($birthdate), $newPicture);
+        if ($playerManager->update($updated, $old_firstname, $old_lastname)) {
             Redirect::to("joueurs.php");
         } else {
             $validator->addError("Erreur lors de la mise à jour du joueur.");

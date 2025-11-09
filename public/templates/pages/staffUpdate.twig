@@ -18,7 +18,8 @@
         </div>
 
         <form method="post" enctype="multipart/form-data" class="update-form-container">
-            <input type="hidden" name="id" value="{{ staffMember.getId() }}">
+            <input type="hidden" name="old_firstname" value="{{ staffMember.getFirstname() }}">
+            <input type="hidden" name="old_lastname" value="{{ staffMember.getLastname() }}">
 
             <label for="prenom">Prénom</label>
             <input type="text" id="prenom" name="prenom" value="{{ staffMember.getFirstname() }}" required>

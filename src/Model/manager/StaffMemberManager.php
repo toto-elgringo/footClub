@@ -19,12 +19,8 @@ class StaffMemberManager implements ManagerInterface
 
         while ($data = $stmt->fetch()) {
             $staffMembers[] = new StaffMember(
-                $data['id'] ?? null,
                 $data['firstname'],
                 $data['lastname'],
-                // passage de:
-                // $data['role'],
-                // à
                 StaffRole::from($data['role']),
                 $data['picture'] ?? ''
             );
@@ -33,15 +29,14 @@ class StaffMemberManager implements ManagerInterface
         return $staffMembers;
     }
 
-    public function findById(int $id): ?StaffMember
+    public function findByName(string $firstname, string $lastname): ?StaffMember
     {
-        $stmt = $this->db->prepare("SELECT * FROM staff_member WHERE id = :id");
-        $stmt->execute(["id" => $id]);
+        $stmt = $this->db->prepare("SELECT * FROM staff_member WHERE firstname = :firstname AND lastname = :lastname");
+        $stmt->execute(["firstname" => $firstname, "lastname" => $lastname]);
         $data = $stmt->fetch();
 
         if ($data) {
             return new StaffMember(
-                $data['id'] ?? null,
                 $data['firstname'],
                 $data['lastname'],
                 StaffRole::from($data['role']),
@@ -69,21 +64,25 @@ class StaffMemberManager implements ManagerInterface
     {
         $this->checkInstanceOf($object, StaffMember::class);
 
-        $stmt = $this->db->prepare("DELETE FROM staff_member WHERE id = :id");
-        return $stmt->execute(["id" => $object->getId()]);
+        $stmt = $this->db->prepare("DELETE FROM staff_member WHERE firstname = :firstname AND lastname = :lastname");
+        return $stmt->execute([
+            "firstname" => $object->getFirstname(),
+            "lastname" => $object->getLastname()
+        ]);
     }
 
-    public function update(object $object): bool
+    public function update(object $object, string $oldFirstname, string $oldLastname): bool
     {
         $this->checkInstanceOf($object, StaffMember::class);
 
-        $stmt = $this->db->prepare("UPDATE staff_member SET firstname = ?, lastname = ?, role = ?, picture = ? WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE staff_member SET firstname = ?, lastname = ?, role = ?, picture = ? WHERE firstname = ? AND lastname = ?");
         return $stmt->execute([
             $object->getFirstname(),
             $object->getLastname(),
             $object->getRole()->value,
             $object->getPicture(),
-            $object->getId()
+            $oldFirstname,
+            $oldLastname
         ]);
     }
 }

@@ -13,14 +13,12 @@ class PlayerManager implements ManagerInterface
 
     public function findAll(): array
     {
-
         $stmt = $this->db->query("SELECT * FROM player");
 
         $players = [];
 
         while ($row = $stmt->fetch()) {
             $players[] = new Player(
-                $row['id'],
                 $row['firstname'],
                 $row['lastname'],
                 new DateTime($row['birthdate']),
@@ -37,14 +35,13 @@ class PlayerManager implements ManagerInterface
         return $now->diff($player->getBirthdate())->y;
     }
 
-    public function findById(int $id): ?Player
+    public function findByName(string $firstname, string $lastname): ?Player
     {
-        $stmt = $this->db->prepare("SELECT * FROM player WHERE id = ?");
-        $stmt->execute([$id]);
+        $stmt = $this->db->prepare("SELECT * FROM player WHERE firstname = ? AND lastname = ?");
+        $stmt->execute([$firstname, $lastname]);
         $row = $stmt->fetch();
         if ($row) {
             return new Player(
-                $row['id'],
                 $row['firstname'],
                 $row['lastname'],
                 new DateTime($row['birthdate']),
@@ -71,21 +68,22 @@ class PlayerManager implements ManagerInterface
     {
         $this->checkInstanceOf($object, Player::class);
 
-        $stmt = $this->db->prepare("DELETE FROM player WHERE id = ?");
-        return $stmt->execute([$object->getId()]);
+        $stmt = $this->db->prepare("DELETE FROM player WHERE firstname = ? AND lastname = ?");
+        return $stmt->execute([$object->getFirstname(), $object->getLastname()]);
     }
 
-    public function update(object $object): bool
+    public function update(object $object, string $oldFirstname, string $oldLastname): bool
     {
         $this->checkInstanceOf($object, Player::class);
-        
-        $stmt = $this->db->prepare("UPDATE player SET firstname = ?, lastname = ?, birthdate = ?, picture = ? WHERE id = ?");
+
+        $stmt = $this->db->prepare("UPDATE player SET firstname = ?, lastname = ?, birthdate = ?, picture = ? WHERE firstname = ? AND lastname = ?");
         return $stmt->execute([
             $object->getFirstname(),
             $object->getLastname(),
             $object->getBirthdate()->format("Y-m-d"),
             $object->getPicture(),
-            $object->getId()
+            $oldFirstname,
+            $oldLastname
         ]);
     }
 }

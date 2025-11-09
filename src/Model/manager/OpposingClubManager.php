@@ -18,34 +18,12 @@ class OpposingClubManager implements ManagerInterface
 
         while ($data = $stmt->fetch()) {
             $clubs[] = new OpposingClub(
-                $data['id'],
                 $data['address'],
                 $data['city']
             );
         }
 
         return $clubs;
-    }
-
-    public function findById(?int $id): ?OpposingClub
-    {
-        if ($id === null) {
-            return null;
-        }
-        
-        $stmt = $this->db->prepare("SELECT * FROM opposing_club WHERE id = ?");
-        $stmt->execute([$id]);
-        $data = $stmt->fetch();
-
-        if (!$data) {
-            return null;
-        }
-
-        return new OpposingClub(
-            $data['id'],
-            $data['address'], // name
-            $data['city'] // city
-        );
     }
 
     public function findByCity(string $city): ?OpposingClub
@@ -59,7 +37,22 @@ class OpposingClubManager implements ManagerInterface
         }
 
         return new OpposingClub(
-            $data['id'],
+            $data['address'],
+            $data['city']
+        );
+    }
+
+    public function findByName(string $name): ?OpposingClub
+    {
+        $stmt = $this->db->prepare("SELECT * FROM opposing_club WHERE address = ?");
+        $stmt->execute([$name]);
+        $data = $stmt->fetch();
+
+        if (!$data) {
+            return null;
+        }
+
+        return new OpposingClub(
             $data['address'],
             $data['city']
         );
@@ -70,36 +63,33 @@ class OpposingClubManager implements ManagerInterface
         $this->checkInstanceOf($object, OpposingClub::class);
 
         $stmt = $this->db->prepare("INSERT INTO opposing_club (city, address) VALUES (?, ?)");
-        $result = $stmt->execute([
+        return $stmt->execute([
             $object->getCity(),
             $object->getName()
         ]);
-
-        if ($result) {
-            $object->setId($this->db->lastInsertId());
-            return true;
-        }
-
-        return false;
     }
 
     public function delete(object $object): bool
     {
         $this->checkInstanceOf($object, OpposingClub::class);
 
-        $stmt = $this->db->prepare("DELETE FROM opposing_club WHERE id = ?");
-        return $stmt->execute([$object->getId()]);
+        $stmt = $this->db->prepare("DELETE FROM opposing_club WHERE city = ? AND address = ?");
+        return $stmt->execute([
+            $object->getCity(),
+            $object->getName()
+        ]);
     }
 
-    public function update(object $object): bool
+    public function update(object $object, string $oldCity, string $oldName): bool
     {
         $this->checkInstanceOf($object, OpposingClub::class);
 
-        $stmt = $this->db->prepare("UPDATE opposing_club SET city = ?, address = ? WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE opposing_club SET city = ?, address = ? WHERE city = ? AND address = ?");
         return $stmt->execute([
             $object->getCity(),
             $object->getName(),
-            $object->getId()
+            $oldCity,
+            $oldName
         ]);
     }
 }

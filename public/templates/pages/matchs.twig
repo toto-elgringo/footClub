@@ -42,12 +42,12 @@
             <h3>Ajouter un match</h3>
             <form action="matchs.php" method="post" class="form-grid">
                 <div class="form-group">
-                    <label for="team_id">Équipe</label>
-                    <select name="team_id" id="team_id" required>
-                        <option>Sélectionner une équipe</option>
+                    <label for="team_name">Équipe</label>
+                    <select name="team_name" id="team_name">
+                        <option value="">Sélectionner une équipe (optionnel)</option>
                         {% if teams is not empty %}
                             {% for team in teams %}
-                                <option value="{{ team.getId() }}">{{ team.getName() }}</option>
+                                <option value="{{ team.getName() }}">{{ team.getName() }}</option>
                             {% endfor %}
                         {% else %}
                             <option disabled>Aucune équipe disponible</option>
@@ -56,11 +56,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="opposing_club_id">Club adverse</label>
-                    <select name="opposing_club_id" id="opposing_club_id" required>
+                    <label for="opposing_club_city">Club adverse</label>
+                    <select name="opposing_club_city" id="opposing_club_city" required>
                         <option>Sélectionner un club</option>
                         {% for club in opposing_clubs %}
-                            <option value="{{ club.getId() }}">{{ club.getCity() }} - {{ club.getName() }}</option>
+                            <option value="{{ club.getCity() }}">{{ club.getCity() }} - {{ club.getName() }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -104,18 +104,19 @@
                     {% set is_past = match_date < now %}
                     {% set is_win = match.getTeamScore() > match.getOpponentScore() %}
                     {% set is_draw = match.getTeamScore() == match.getOpponentScore() %}
-                    {% set opposingClub = opposingClubManager.findById(match.getOpposingClubId()) %}
+                    {% set opposingClub = match.getOpposingClub() %}
                     {% set opponent_name = opposingClub ? opposingClub.getCity() : 'Club inconnu' %}
 
                     <div class="match-card card {% if is_past %}{% if is_win %}win{% elseif is_draw %}draw{% else %}lose{% endif %}{% endif %}"
-                         data-type="match" data-id="{{ match.getId() }}">
+                         data-type="match" data-date="{{ match.getDate().format('Y-m-d H:i:s') }}" data-city="{{ match.getCity() }}">
                         <span class="delete">✕</span>
                         <form method="post" action="matchs.php" class="delete-player-form delete-form" style="display:none;">
                             <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="id" value="{{ match.getId() }}">
+                            <input type="hidden" name="date" value="{{ match.getDate().format('Y-m-d H:i:s') }}">
+                            <input type="hidden" name="city" value="{{ match.getCity() }}">
                         </form>
 
-                        <a href="matchsUpdate.php?id={{ match.getId() }}" class="match-card-link">
+                        <a href="matchsUpdate.php?date={{ match.getDate().format('Y-m-d H:i:s') }}&city={{ match.getCity() }}" class="match-card-link">
                             <div class="match-date">
                                 {{ match_date.format('d/m/Y') }}
                             </div>
@@ -126,14 +127,8 @@
                                 {# Équipe à domicile #}
                                 <div class="team-row">
                                     <div class="team">
-                                        {% set teamId = match.getTeamId() %}
-                                        {% set teamName = 'Équipe inconnue' %}
-                                        {% if teamId is not null %}
-                                            {% set team = teamManager.findById(teamId) %}
-                                            {% if team %}
-                                                {% set teamName = team.getName() %}
-                                            {% endif %}
-                                        {% endif %}
+                                        {% set team = match.getTeam() %}
+                                        {% set teamName = team ? team.getName() : 'Équipe inconnue' %}
                                         <span class="team-name">{{ teamName }}</span>
                                     </div>
                                     {% if is_past %}

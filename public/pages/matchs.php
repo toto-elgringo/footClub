@@ -20,9 +20,10 @@ $teams = $teamManager->findAllTeams();
 
 $validator = new FormValidator();
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
-    $id = (int) $_POST['id'];
-    $matchToDelete = $matchManager->findById($id);
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['date'], $_POST['city'])) {
+    $date = $_POST['date'];
+    $city = trim($_POST['city']);
+    $matchToDelete = $matchManager->findByDateAndCity($date, $city);
 
     if ($matchToDelete instanceof FootballMatch) {
         if ($matchManager->delete($matchToDelete)) {
@@ -49,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($existingClub) {
                     $validator->addError("Un club existe déjà pour cette ville");
                 } else {
-                    $newClub = new OpposingClub(null, $club_city, $club_address);
+                    $newClub = new OpposingClub($club_address, $club_city);
                     $opposingClubManager->insert($newClub);
                 }
             } catch (PDOException $e) {
@@ -58,15 +59,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    if (isset($_POST['team_id'], $_POST['match_date'], $_POST['opposing_club_id'])) {
-        $team_id = (int)$_POST['team_id'];
+    if (isset($_POST['team_name'], $_POST['match_date'], $_POST['opposing_club_city'])) {
+        $team_name = trim($_POST['team_name']);
         $team_score = (int)$_POST['team_score'];
         $opponent_score = (int)$_POST['opponent_score'];
         $date = $_POST['match_date'];
         $city = trim($_POST['city']);
-        $opposing_club_id = (int)$_POST['opposing_club_id'];
+        $opposing_club_city = trim($_POST['opposing_club_city']);
 
-        if (empty($team_id) || empty($date) || empty($city) || empty($opposing_club_id)) {
+        if (empty($date) || empty($city) || empty($opposing_club_city)) {
             $validator->addError("Tous les champs doivent être remplis");
         } elseif ($team_score < 0 || $opponent_score < 0) {
             $validator->addError("Les scores doivent être positifs");
@@ -77,8 +78,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (empty($validator->getErrors())) {
             try {
                 $dateTime = new DateTime($date);
-                $match = new FootballMatch(null, $dateTime, $city, $team_score, $opponent_score, $team_id, $opposing_club_id);
-                $matchManager->insert($match);
+                $team = !empty($team_name) ? $teamManager->findByName($team_name) : null;
+                $opposingClub = $opposingClubManager->findByCity($opposing_club_city);
+
+                if (!$opposingClub) {
+                    $validator->addError("Club adverse introuvable");
+                } else {
+                    $match = new FootballMatch($dateTime, $city, $team_score, $opponent_score, $team, $opposingClub);
+                    $matchManager->insert($match);
+                }
             } catch (Exception $e) {
                 $validator->addError("Erreur lors de la création du match : " . $e->getMessage());
             }

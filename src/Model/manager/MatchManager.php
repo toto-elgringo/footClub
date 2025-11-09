@@ -4,18 +4,23 @@ namespace App\Model\Manager;
 
 use DateTime;
 use App\Model\Classes\FootballMatch;
+use App\Model\Classes\Team;
+use App\Model\Classes\OpposingClub;
 use App\Model\Trait\PdoTrait;
 use App\Model\Trait\InstanceOfTrait;
+use App\Model\Trait\FindIdTrait;
 
 class MatchManager implements ManagerInterface
 {
-    use PdoTrait, InstanceOfTrait;
+    use PdoTrait, InstanceOfTrait, FindIdTrait;
 
     public function findAll(): array
     {
         $query = "
-            SELECT m.*
+            SELECT m.*, t.name as team_name, oc.address as club_name, oc.city as club_city
             FROM `match` m
+            LEFT JOIN team t ON m.team_id = t.id
+            JOIN opposing_club oc ON m.opposing_club_id = oc.id
             ORDER BY m.date DESC
         ";
 
@@ -24,67 +29,69 @@ class MatchManager implements ManagerInterface
         $matches = [];
 
         while ($data = $stmt->fetch()) {
+            $team = $data['team_name'] ? new Team($data['team_name']) : null;
+            $opposingClub = new OpposingClub($data['club_name'], $data['club_city']);
+
             $matches[] = new FootballMatch(
-                $data['id'],
                 new DateTime($data['date']),
                 $data['city'],
                 $data['team_score'],
                 $data['opponent_score'],
-                $data['team_id'],
-                $data['opposing_club_id']
+                $team,
+                $opposingClub
             );
         }
 
         return $matches;
     }
 
-    public function findById(int $id): ?FootballMatch
+    public function findByDateAndCity(string $date, string $city): ?FootballMatch
     {
         $query = "
-            SELECT m.*
+            SELECT m.*, t.name as team_name, oc.address as club_name, oc.city as club_city
             FROM `match` m
-            WHERE m.id = :id
+            LEFT JOIN team t ON m.team_id = t.id
+            JOIN opposing_club oc ON m.opposing_club_id = oc.id
+            WHERE m.date = :date AND m.city = :city
         ";
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute(['id' => $id]);
+        $stmt->execute(['date' => $date, 'city' => $city]);
 
         $data = $stmt->fetch();
 
         if ($data) {
+            $team = $data['team_name'] ? new Team($data['team_name']) : null;
+            $opposingClub = new OpposingClub($data['club_name'], $data['club_city']);
+
             return new FootballMatch(
-                $data['id'],
                 new DateTime($data['date']),
                 $data['city'],
                 $data['team_score'],
                 $data['opponent_score'],
-                $data['team_id'],
-                $data['opposing_club_id']
+                $team,
+                $opposingClub
             );
         }
 
         return null;
     }
 
-    // passage de public function insert(FootballMatch $match): bool
-    // a
     public function insert(object $object): bool
     {
-        // avec le trait, passage de:
-        // if(!$object instanceof FootballMatch) {
-        //     return false;
-        // }
-        // à
-        $this->checkInstanceOf($object, FootballMatch::class); // rajout d'une vérification pour voir si on passe le bon objet en paramètre
-        
+        $this->checkInstanceOf($object, FootballMatch::class);
+
+        $teamId = $object->getTeam() !== null ? $this->findTeamId($object->getTeam()) : null;
+        $opposingClubId = $this->findOpposingClubId($object->getOpposingClub());
+
         $stmt = $this->db->prepare("INSERT INTO `match` (date, city, team_score, opponent_score, team_id, opposing_club_id) VALUES (?, ?, ?, ?, ?, ?)");
         return $stmt->execute([
             $object->getDate()->format("Y-m-d H:i:s"),
             $object->getCity(),
             $object->getTeamScore(),
             $object->getOpponentScore(),
-            $object->getTeamId(),
-            $object->getOpposingClubId()
+            $teamId,
+            $opposingClubId
         ]);
     }
 
@@ -92,23 +99,30 @@ class MatchManager implements ManagerInterface
     {
         $this->checkInstanceOf($object, FootballMatch::class);
 
-        $stmt = $this->db->prepare("DELETE FROM `match` WHERE id = :id");
-        return $stmt->execute(['id' => $object->getId()]);
+        $stmt = $this->db->prepare("DELETE FROM `match` WHERE date = ? AND city = ?");
+        return $stmt->execute([
+            $object->getDate()->format("Y-m-d H:i:s"),
+            $object->getCity()
+        ]);
     }
 
-    public function update(object $object): bool
+    public function update(object $object, string $oldDate, string $oldCity): bool
     {
-        $this->checkInstanceOf($object, FootballMatch::class); 
-        
-        $stmt = $this->db->prepare("UPDATE `match` SET date = ?, city = ?, team_score = ?, opponent_score = ?, team_id = ?, opposing_club_id = ? WHERE id = ?");
+        $this->checkInstanceOf($object, FootballMatch::class);
+
+        $teamId = $object->getTeam() !== null ? $this->findTeamId($object->getTeam()) : null;
+        $opposingClubId = $this->findOpposingClubId($object->getOpposingClub());
+
+        $stmt = $this->db->prepare("UPDATE `match` SET date = ?, city = ?, team_score = ?, opponent_score = ?, team_id = ?, opposing_club_id = ? WHERE date = ? AND city = ?");
         return $stmt->execute([
             $object->getDate()->format("Y-m-d H:i:s"),
             $object->getCity(),
             $object->getTeamScore(),
             $object->getOpponentScore(),
-            $object->getTeamId(),
-            $object->getOpposingClubId(),
-            $object->getId()
+            $teamId,
+            $opposingClubId,
+            $oldDate,
+            $oldCity
         ]);
     }
 }

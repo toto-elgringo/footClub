@@ -7,48 +7,21 @@ use DateTime;
 class Player extends Person
 {
     public function __construct(
-        private ?int $id, 
-        private string $firstname, 
-        private string $lastname,
+        string $firstname,
+        string $lastname,
         private DateTime $birthdate,
-        private string $picture
-    ) {}
+        string $picture
+    ) {
+        parent::__construct($firstname, $lastname, $picture);
+    }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-    public function getFirstname(): string
-    {
-        return $this->firstname;
-    }
-    public function getLastname(): string
-    {
-        return $this->lastname;
-    }
     public function getBirthdate(): DateTime
     {
         return $this->birthdate;
     }
-    public function getPicture(): string
-    {
-        return $this->picture;
-    }
 
-    public function setFirstname(string $firstname): void
-    {
-        $this->firstname = $firstname;
-    }
-    public function setLastname(string $lastname): void
-    {
-        $this->lastname = $lastname;
-    }
     public function setBirthdate(string $birthdate): void
     {
         $this->birthdate = new DateTime($birthdate);
-    }
-    public function setPicture(string $picture): void
-    {
-        $this->picture = $picture;
     }
 }

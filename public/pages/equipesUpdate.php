@@ -8,7 +8,8 @@ use App\Helper\TwigRenderer;
 use App\Model\Manager\TeamManager;
 
 $teamManager = new TeamManager();
-$team = $teamManager->findById($_GET['id']);
+$oldName = $_GET['name'] ?? '';
+$team = $teamManager->findByName($oldName);
 
 $validator = new FormValidator();
 
@@ -16,9 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_team'])) {
     $nom = trim($_POST['nom'] ?? '');
     $validator->required(['nom'], $_POST);
     if (empty($validator->getErrors())) {
-        $updated = new Team($team->getId(), $nom);
+        $updated = new Team($nom);
 
-        if ($teamManager->update($updated)) {
+        if ($teamManager->update($updated, $oldName)) {
             Redirect::to("equipes.php");
         }
     }

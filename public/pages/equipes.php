@@ -12,10 +12,10 @@ $teamsWithCount = $teamManager->findAllWithPlayerCount();
 
 $validator = new FormValidator();
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete') {
-    $id = (int) $_POST['id'];
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['name'])) {
+    $name = trim($_POST['name']);
 
-    $teamToDelete = $teamManager->findById($id);
+    $teamToDelete = $teamManager->findByName($name);
     if ($teamToDelete instanceof Team) {
         if ($teamManager->delete($teamToDelete)) {
             Redirect::to("equipes.php");
@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['action'])) {
 
     $nom = trim($_POST["nom"] ?? '');
     if (!$validator->hasErrors()) {
-        $team = new Team(null, $nom);
+        $team = new Team($nom);
 
         if ($teamManager->insert($team)) {
             Redirect::to("equipes.php");

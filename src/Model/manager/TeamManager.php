@@ -17,7 +17,7 @@ class TeamManager implements ManagerInterface
         $stmt = $this->db->query("SELECT * FROM team");
         $teams = [];
         while ($data = $stmt->fetch()) {
-            $teams[] = new Team($data['id'], $data['name']);
+            $teams[] = new Team($data['name']);
         }
         return $teams;
     }
@@ -29,23 +29,22 @@ class TeamManager implements ManagerInterface
 
         $teams = [];
         while ($data = $stmt->fetch()) {
-            $teams[] = new Team($data['id'], $data['name']);
+            $teams[] = new Team($data['name']);
         }
         return $teams;
     }
 
-
-    public function findById(int $id): ?Team
+    public function findByName(string $name): ?Team
     {
-        $stmt = $this->db->prepare("SELECT * FROM team WHERE id = ?");
-        $stmt->execute([$id]);
+        $stmt = $this->db->prepare("SELECT * FROM team WHERE name = ?");
+        $stmt->execute([$name]);
         $data = $stmt->fetch();
 
         if (!$data) {
             return null;
         }
 
-        return new Team($data['id'], $data['name']);
+        return new Team($data['name']);
     }
 
     public function findAllWithPlayerCount(): array
@@ -61,7 +60,7 @@ class TeamManager implements ManagerInterface
 
         $playerCount = [];
         while ($data = $stmt->fetch()) {
-            $team = new Team($data['id'], $data['name']);
+            $team = new Team($data['name']);
             $playerCount[] = [
                 'team' => $team,
                 'player_count' => (int)$data['player_count']
@@ -83,18 +82,18 @@ class TeamManager implements ManagerInterface
     {
         $this->checkInstanceOf($object, Team::class);
 
-        $stmt = $this->db->prepare("DELETE FROM team WHERE id = :id");
-        return $stmt->execute(["id" => $object->getId()]);
+        $stmt = $this->db->prepare("DELETE FROM team WHERE name = :name");
+        return $stmt->execute(["name" => $object->getName()]);
     }
 
-    public function update(object $object): bool
+    public function update(object $object, string $oldName): bool
     {
         $this->checkInstanceOf($object, Team::class);
 
-        $stmt = $this->db->prepare("UPDATE team SET name = ? WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE team SET name = ? WHERE name = ?");
         return $stmt->execute([
             $object->getName(),
-            $object->getId()
+            $oldName
         ]);
     }
 }

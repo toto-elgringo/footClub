@@ -7,31 +7,31 @@ use App\Model\Enum\PlayerRole;
 class PlayerTeam
 {
     public function __construct(
-        private int $playerId,
-        private int $teamId,
+        private Player $player,
+        private Team $team,
         private PlayerRole $role
     ) {}
 
-    public function getPlayerId(): int
+    public function getPlayer(): Player
     {
-        return $this->playerId;
+        return $this->player;
     }
-    public function getTeamId(): int
+    public function getTeam(): Team
     {
-        return $this->teamId;
+        return $this->team;
     }
     public function getRole(): PlayerRole
     {
         return $this->role;
     }
 
-    public function setPlayerId(int $playerId): void
+    public function setPlayer(Player $player): void
     {
-        $this->playerId = $playerId;
+        $this->player = $player;
     }
-    public function setTeamId(int $teamId): void
+    public function setTeam(Team $team): void
     {
-        $this->teamId = $teamId;
+        $this->team = $team;
     }
     public function setRole(PlayerRole $role): void
     {

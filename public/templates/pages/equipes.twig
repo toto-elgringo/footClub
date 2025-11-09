@@ -32,14 +32,14 @@
             {% set team = teamData.team %} {# set permet de stocker une variable #}
             {% set playerCount = teamData.player_count %}
 
-            <div class="equipe-card card" data-type="team" data-id="{{ team.getId() }}"> {# le {{}} permet "d'injecter" une variable dans le code #}
+            <div class="equipe-card card" data-type="team" data-name="{{ team.getName() }}"> {# le {{}} permet "d'injecter" une variable dans le code #}
                 <span class="delete">✕</span>
                 <form method="post" action="equipes.php" class="delete-player-form delete-form" style="display:none;">
                     <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="id" value="{{ team.getId() }}">
+                    <input type="hidden" name="name" value="{{ team.getName() }}">
                 </form>
 
-                <a href="equipesUpdate.php?id={{ team.getId() }}" class="player-card-link">
+                <a href="equipesUpdate.php?name={{ team.getName() }}" class="player-card-link">
                     <div class="card-header">
                         <div class="card-header-title">
                             <h2>{{ team.getName() }}</h2>

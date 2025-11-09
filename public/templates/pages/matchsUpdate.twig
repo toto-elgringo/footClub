@@ -17,16 +17,17 @@
             </div>
         </div>
 
-        <form action="matchsUpdate.php?id={{ match.getId() }}" method="post" class="form-grid">
+        <form action="matchsUpdate.php?date={{ match.getDate().format('Y-m-d H:i:s') }}&city={{ match.getCity() }}" method="post" class="form-grid">
             <input type="hidden" name="update_match" value="1">
 
             <div class="form-group">
-                <label for="team_id">Équipe</label>
-                <select name="team_id" id="team_id" required>
-                    <option value="">Sélectionner une équipe</option>
+                <label for="team_name">Équipe</label>
+                <select name="team_name" id="team_name">
+                    <option value="">Sélectionner une équipe (optionnel)</option>
                     {% if teams is not empty %}
                         {% for team in teams %}
-                            <option value="{{ team.getId() }}" {% if match.getTeamId() == team.getId() %}selected{% endif %}>
+                            {% set currentTeam = match.getTeam() %}
+                            <option value="{{ team.getName() }}" {% if currentTeam and currentTeam.getName() == team.getName() %}selected{% endif %}>
                                 {{ team.getName() }}
                             </option>
                         {% endfor %}
@@ -35,11 +36,12 @@
             </div>
 
             <div class="form-group">
-                <label for="opposing_club_id">Club adverse</label>
-                <select name="opposing_club_id" id="opposing_club_id" required>
+                <label for="opposing_club_city">Club adverse</label>
+                <select name="opposing_club_city" id="opposing_club_city" required>
                     <option value="">Sélectionner un club</option>
                     {% for club in opposing_clubs %}
-                        <option value="{{ club.getId() }}" {% if match.getOpposingClubId() == club.getId() %}selected{% endif %}>
+                        {% set currentClub = match.getOpposingClub() %}
+                        <option value="{{ club.getCity() }}" {% if currentClub.getCity() == club.getCity() %}selected{% endif %}>
                             {{ club.getCity() }} - {{ club.getName() }}
                         </option>
                     {% endfor %}

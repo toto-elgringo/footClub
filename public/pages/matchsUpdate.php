@@ -13,29 +13,38 @@ $matchManager = new MatchManager();
 $teamManager = new TeamManager();
 $opposingClubManager = new OpposingClubManager();
 
-$match = $matchManager->findById($_GET['id']);
+$oldDate = $_GET['date'] ?? '';
+$oldCity = $_GET['city'] ?? '';
+$match = $matchManager->findByDateAndCity($oldDate, $oldCity);
 $teams = $teamManager->findAll();
 $opposing_clubs = $opposingClubManager->findAll();
 
 $validator = new FormValidator();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_match'])) {
-    $team_id = trim($_POST['team_id'] ?? '');
-    $opposing_club_id = trim($_POST['opposing_club_id'] ?? '');
+    $team_name = trim($_POST['team_name'] ?? '');
+    $opposing_club_city = trim($_POST['opposing_club_city'] ?? '');
     $match_date = trim($_POST['match_date'] ?? '');
     $city = trim($_POST['city'] ?? '');
     $team_score = trim($_POST['team_score'] ?? '');
     $opponent_score = trim($_POST['opponent_score'] ?? '');
 
-    if ($team_id === '' || $opposing_club_id === '' || $match_date === '' || $city === '' || $team_score === '' || $opponent_score === '') {
+    if ($match_date === '' || $city === '' || $team_score === '' || $opponent_score === '') {
         $validator->addError("Champs requis manquants.");
     }
 
     if (empty($validator->getErrors())) {
-        $updated = new FootballMatch($match->getId(), new DateTime($match_date), $city, $team_score, $opponent_score, $team_id, $opposing_club_id);
+        $team = !empty($team_name) ? $teamManager->findByName($team_name) : null;
+        $opposingClub = $opposingClubManager->findByCity($opposing_club_city);
 
-        if ($matchManager->update($updated)) {
-            Redirect::to("matchs.php");
+        if (!$opposingClub) {
+            $validator->addError("Club adverse introuvable");
+        } else {
+            $updated = new FootballMatch(new DateTime($match_date), $city, $team_score, $opponent_score, $team, $opposingClub);
+
+            if ($matchManager->update($updated, $oldDate, $oldCity)) {
+                Redirect::to("matchs.php");
+            }
         }
     }
 }
