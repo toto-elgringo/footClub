@@ -79,19 +79,34 @@
     padding: 5px 10px;
     border-radius: 10px;
     width: fit-content;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.equipe-bubble .delete-team {
+    cursor: pointer;
+    color: #000000;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.equipe-bubble .delete-team:hover {
+    color: rgb(255, 0, 0);
+}
+
+.equipe-bubble .equipe-info {
+    user-select: none;
 }
 
 .ajouter-equipe {
     margin-top: 15px;
     padding-top: 15px;
     border-top: 1px solid #eee;
-}
-
-.ajouter-equipe form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
 }
 
 .ajouter-equipe select {
@@ -116,6 +131,31 @@
 
 .ajouter-equipe .submit-button:hover {
     background-color: #45a049;
+}
+
+.teams-section {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+}
+
+.teams-section h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.teams-section h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #555;
+    font-size: 1.1em;
+}
+
+.teams-section .appartient-equipe {
+    flex-wrap: wrap;
 }
 
 

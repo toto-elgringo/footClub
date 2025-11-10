@@ -40,5 +40,55 @@
             <button type="submit" name="update_player" value="1">Enregistrer</button>
             <a href="joueurs.php" class="cancel">Annuler</a>
         </form>
+
+        <div class="teams-section">
+            <h2>Équipes du joueur</h2>
+
+            {% if playerTeams is not empty %}
+                <div class="appartient-equipe">
+                    {% for relation in playerTeams %}
+                        <div class="equipe-bubble">
+                            <span class="delete-team">✕</span>
+                            <form method="post" action="joueursUpdate.php?firstname={{ player.getFirstname() }}&lastname={{ player.getLastname() }}" class="delete-team-form" style="display:none;">
+                                <input type="hidden" name="action" value="remove_from_team">
+                                <input type="hidden" name="team_name" value="{{ relation.getTeam().getName() }}">
+                            </form>
+                            <span class="equipe-info">
+                                {{ relation.getTeam().getName() }}
+                                -
+                                {{ relation.getRole().value }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Ce joueur n'appartient à aucune équipe.</p>
+            {% endif %}
+
+            <div class="ajouter-equipe">
+                <h3>Ajouter à une équipe</h3>
+                <form action="joueursUpdate.php?firstname={{ player.getFirstname() }}&lastname={{ player.getLastname() }}" method="post">
+                    <input type="hidden" name="action" value="add_to_team">
+                    <select name="team_name" required>
+                        <option value="">Sélectionner une équipe</option>
+                        {% for team in availableTeams %}
+                            <option value="{{ team.getName() }}">{{ team.getName() }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="role" required>
+                        <option value="">Sélectionner un rôle</option>
+                        <option value="Gardien">Gardien</option>
+                        <option value="Défenseur">Défenseur</option>
+                        <option value="Milieu">Milieu</option>
+                        <option value="Attaquant">Attaquant</option>
+                    </select>
+                    <button type="submit" class="submit-button">Ajouter</button>
+                </form>
+            </div>
+        </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="../js/joueursUpdate.js"></script>
 {% endblock %}
